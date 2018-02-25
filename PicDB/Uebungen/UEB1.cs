@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 using BIF.SWE2.Interfaces;
 using BIF.SWE2.Interfaces.Models;
 using BIF.SWE2.Interfaces.ViewModels;
@@ -23,92 +24,92 @@ namespace Uebungen
 
         public IDataAccessLayer GetAnyDataAccessLayer()
         {
-            throw new NotImplementedException();
+            return new DataAccessLayer("PicDB", "PicDB", "localhost", "PicDB");
         }
 
         public IBusinessLayer GetBusinessLayer()
         {
-            throw new NotImplementedException();
+            return new BusinessLayer();
         }
 
         public BIF.SWE2.Interfaces.Models.IEXIFModel GetEmptyEXIFModel()
         {
-            throw new NotImplementedException();
+            return new EXIFModel();
         }
 
         public BIF.SWE2.Interfaces.ViewModels.IEXIFViewModel GetEmptyEXIFViewModel()
         {
-            throw new NotImplementedException();
+            return new EXIFViewModel(new EXIFModel());
         }
 
         public BIF.SWE2.Interfaces.Models.IIPTCModel GetEmptyIPTCModel()
         {
-            throw new NotImplementedException();
+            return new IPTCModel();
         }
 
         public BIF.SWE2.Interfaces.ViewModels.IIPTCViewModel GetEmptyIPTCViewModel()
         {
-            throw new NotImplementedException();
+            return new IPTCViewModel(new IPTCModel());
         }
 
         public BIF.SWE2.Interfaces.ViewModels.IMainWindowViewModel GetEmptyMainWindowViewModel()
         {
-            throw new NotImplementedException();
+            return new MainWindowViewModel();
         }
 
         public BIF.SWE2.Interfaces.ViewModels.IPhotographerListViewModel GetEmptyPhotographerListViewModel()
         {
-            throw new NotImplementedException();
+            return new PhotographerListViewModel();
         }
 
         public BIF.SWE2.Interfaces.Models.IPhotographerModel GetEmptyPhotographerModel()
         {
-            throw new NotImplementedException();
+            return new PhotorapherModel();
         }
 
         public BIF.SWE2.Interfaces.ViewModels.IPhotographerViewModel GetEmptyPhotographerViewModel()
         {
-            throw new NotImplementedException();
+            return new PhotographerViewModel(new PhotorapherModel());
         }
 
         public BIF.SWE2.Interfaces.ViewModels.IPictureListViewModel GetEmptyPictureListViewModel()
         {
-            throw new NotImplementedException();
+            return new PictureListViewModel();
         }
 
         public BIF.SWE2.Interfaces.Models.IPictureModel GetEmptyPictureModel()
         {
-            throw new NotImplementedException();
+            return new PictureModel();
         }
 
         public BIF.SWE2.Interfaces.ViewModels.IPictureViewModel GetEmptyPictureViewModel()
         {
-            throw new NotImplementedException();
+            return new PictureViewModel(new PictureModel());
         }
 
         public BIF.SWE2.Interfaces.ViewModels.ISearchViewModel GetEmptySearchViewModel()
         {
-            throw new NotImplementedException();
+            return new SearchViewModel();
         }
 
         public void TestSetup(string picturePath)
         {
-            throw new NotImplementedException();
+            Directory.CreateDirectory(picturePath);
         }
 
         public ICameraModel GetEmptyCameraModel()
         {
-            throw new NotImplementedException();
+            return new CameraModel();
         }
 
         public ICameraListViewModel GetEmptyCameraListViewModel()
         {
-            throw new NotImplementedException();
+            return new CameraListViewModel();
         }
 
         public ICameraViewModel GetEmptyCameraViewModel()
         {
-            throw new NotImplementedException();
+            return new CameraViewModel(new CameraModel());
         }
     }
 }

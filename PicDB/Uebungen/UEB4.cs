@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 using BIF.SWE2.Interfaces;
 using BIF.SWE2.Interfaces.Models;
 using BIF.SWE2.Interfaces.ViewModels;
@@ -17,42 +18,42 @@ namespace Uebungen
 
         public IBusinessLayer GetBusinessLayer()
         {
-            throw new NotImplementedException();
+            return new BusinessLayer();
         }
 
         public void TestSetup(string picturePath)
         {
-            throw new NotImplementedException();
+            Directory.CreateDirectory(picturePath);
         }
 
         public IEXIFModel GetEmptyEXIFModel()
         {
-            throw new NotImplementedException();
+            return new EXIFModel();
         }
 
         public IEXIFViewModel GetEXIFViewModel(IEXIFModel mdl)
         {
-            throw new NotImplementedException();
+            return new EXIFViewModel(new EXIFModel());
         }
 
         public IIPTCModel GetEmptyIPTCModel()
         {
-            throw new NotImplementedException();
+            return new IPTCModel();
         }
 
-        public IIPTCViewModel GetIPTCViewModel(IIPTCModel mdl)
+        public IIPTCViewModel GetIPTCViewModel(BIF.SWE2.Interfaces.Models.IIPTCModel mdl)
         {
-            throw new NotImplementedException();
+            return new IPTCViewModel(new IPTCModel());
         }
 
         public ICameraModel GetCameraModel(string producer, string make)
         {
-            throw new NotImplementedException();
+            return new CameraModel();
         }
 
         public ICameraViewModel GetCameraViewModel(ICameraModel mdl)
         {
-            throw new NotImplementedException();
+            return new CameraViewModel(new CameraModel());
         }
     }
 }

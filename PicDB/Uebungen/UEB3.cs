@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 using BIF.SWE2.Interfaces;
 using BIF.SWE2.Interfaces.ViewModels;
 using PicDB;
@@ -16,22 +17,22 @@ namespace Uebungen
 
         public IBusinessLayer GetBusinessLayer()
         {
-            throw new NotImplementedException();
+            return new BusinessLayer();
         }
 
         public void TestSetup(string picturePath)
         {
-            throw new NotImplementedException();
+            Directory.CreateDirectory(picturePath);
         }
 
         public IDataAccessLayer GetDataAccessLayer()
         {
-            throw new NotImplementedException();
+            return new DataAccessLayer("PicDB", "PicDB", "localhost", "PicDB");
         }
 
         public ISearchViewModel GetSearchViewModel()
         {
-            throw new NotImplementedException();
+            return new SearchViewModel();
         }
     }
 }
