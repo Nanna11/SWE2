@@ -5,3 +5,4 @@ deploy/
 packages/
 /PicDB/*.user
 BIF-SWE2 - mit Tests.sln
+.vs
