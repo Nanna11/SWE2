@@ -62,7 +62,7 @@
     <Compile Include="CameraViewModel.cs" />
     <Compile Include="BusinessLayer.cs" />
     <Compile Include="CameraListViewModel.cs" />
-    <Compile Include="CodeFile1.cs" />
+    <Compile Include="Exceptions.cs" />
     <Compile Include="SearchViewModel.cs" />
     <Compile Include="PictureListViewModel.cs" />
     <Compile Include="PhotographerListViewModel.cs" />
