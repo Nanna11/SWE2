@@ -12,17 +12,20 @@ namespace Uebungen
 {
     public class UEB5 : IUEB5
     {
+        string path;
+
         public void HelloWorld()
         {
         }
 
         public IBusinessLayer GetBusinessLayer()
         {
-            return new BusinessLayer();
+            return new MockBusinessLayer(path);
         }
 
         public void TestSetup(string picturePath)
         {
+            path = picturePath;
             Directory.CreateDirectory(picturePath);
         }
 
@@ -33,7 +36,7 @@ namespace Uebungen
 
         public IPhotographerViewModel GetPhotographerViewModel(IPhotographerModel mdl)
         {
-            return new PhotographerViewModel(new PhotorapherModel());
+            return new PhotographerViewModel(mdl);
         }
 
         public ICameraModel GetEmptyCameraModel()
@@ -43,7 +46,7 @@ namespace Uebungen
 
         public ICameraViewModel GetCameraViewModel(ICameraModel mdl)
         {
-            return new CameraViewModel(new CameraModel());
+            return new CameraViewModel(mdl);
         }
     }
 }

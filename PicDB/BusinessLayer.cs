@@ -9,8 +9,15 @@ namespace PicDB
 {
     class BusinessLayer : IBusinessLayer
     {
-        PictureListViewModel pl = new PictureListViewModel();
+        PictureListViewModel pl;
         IDataAccessLayer dal = new DataAccessLayer("PicDB", "PicDB", "localhost", "PicDB");
+        string _picturepath;
+
+        public BusinessLayer(string path)
+        {
+            _picturepath = path;
+            Sync();
+        }
 
         public void DeletePhotographer(int ID)
         {
@@ -24,12 +31,12 @@ namespace PicDB
 
         public IEXIFModel ExtractEXIF(string filename)
         {
-            return new EXIFModel();
+            return GetDemoExif();
         }
 
         public IIPTCModel ExtractIPTC(string filename)
         {
-            return new IPTCModel();
+            return GetDemoIPTC();
         }
 
         public ICameraModel GetCamera(int ID)
@@ -79,12 +86,35 @@ namespace PicDB
 
         public void Sync()
         {
-            pl = new PictureListViewModel();
+            throw new NotImplementedException();
         }
 
         public void WriteIPTC(string filename, IIPTCModel iptc)
         {
             throw new NotImplementedException();
+        }
+
+        private IEXIFModel GetDemoExif()
+        {
+            EXIFModel e = new EXIFModel();
+            e.Make = "Make";
+            e.FNumber = 1;
+            e.ExposureTime = 5;
+            e.ISOValue = 200;
+            e.Flash = true;
+            e.ExposureProgram = ExposurePrograms.LandscapeMode;
+            return e;
+        }
+
+        private IIPTCModel GetDemoIPTC()
+        {
+            IIPTCModel i = new IPTCModel();
+            i.ByLine = "ByLine";
+            i.Caption = "Captoin";
+            i.CopyrightNotice = "CopyrightNotice";
+            i.Headline = "Headline";
+            i.Keywords = "Keywords";
+            return i;
         }
     }
 }

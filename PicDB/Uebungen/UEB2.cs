@@ -12,13 +12,15 @@ namespace Uebungen
 {
     public class UEB2 : IUEB2
     {
+        string path;
+
         public void HelloWorld()
         {
         }
 
         public IBusinessLayer GetBusinessLayer()
         {
-            return new BusinessLayer();
+            return new MockBusinessLayer(path);
         }
 
         public BIF.SWE2.Interfaces.ViewModels.IMainWindowViewModel GetMainWindowViewModel()
@@ -38,6 +40,7 @@ namespace Uebungen
 
         public void TestSetup(string picturePath)
         {
+            path = picturePath;
             Directory.CreateDirectory(picturePath);
         }
 

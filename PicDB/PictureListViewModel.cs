@@ -1,4 +1,5 @@
-﻿using BIF.SWE2.Interfaces.ViewModels;
+﻿using BIF.SWE2.Interfaces.Models;
+using BIF.SWE2.Interfaces.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,11 +9,34 @@ namespace PicDB
 {
     class PictureListViewModel : IPictureListViewModel
     {
-        int _CurrentIndex;
+        int _CurrentIndex = 1;
 
-        List<IPictureViewModel> _List = new List<IPictureViewModel>();
+        List<IPictureViewModel> _List;
 
-        public IPictureViewModel CurrentPicture => List.ElementAt<IPictureViewModel>(CurrentIndex - 1);
+        public PictureListViewModel(IEnumerable<IPictureViewModel> p)
+        {
+            _List = p.ToList<IPictureViewModel>();
+        }
+
+        public PictureListViewModel(IEnumerable<IPictureModel> p)
+        {
+            _List = new List<IPictureViewModel>();
+            foreach(IPictureModel pic in p)
+            {
+                IPictureViewModel v = new PictureViewModel(pic);
+                _List.Add(v);
+            }
+        }
+
+        public IPictureViewModel CurrentPicture
+        {
+            get
+            {
+                if (CurrentIndex <= Count) return List.ElementAt<IPictureViewModel>(CurrentIndex - 1);
+                else return null;
+            }
+            
+        }
 
         public IEnumerable<IPictureViewModel> List => _List;
 

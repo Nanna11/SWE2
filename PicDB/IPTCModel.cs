@@ -17,11 +17,6 @@ namespace PicDB
 
         public IPTCModel()
         {
-            ByLine = "ByLine";
-            Caption = "Captoin";
-            CopyrightNotice = "CopyrightNotice";
-            Headline = "Headline";
-            Keywords = "Keywords";
         }
 
         public string Keywords {

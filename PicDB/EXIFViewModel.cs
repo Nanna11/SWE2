@@ -30,7 +30,13 @@ namespace PicDB
 
         public string ExposureProgram => _EXIFModel.ExposureProgram.ToString();
 
-        public string ExposureProgramResource => throw new NotImplementedException();
+        public string ExposureProgramResource
+        {
+            get
+            {
+                return ExposureProgram.ToString();
+            }
+        }
 
         public ICameraViewModel Camera {
             get => _CameraViewModel;
@@ -49,6 +55,12 @@ namespace PicDB
             }
         }
 
-        public string ISORatingResource => throw new NotImplementedException();
+        public string ISORatingResource
+        {
+            get
+            {
+                return ISORating.ToString();
+            }
+        }
     }
 }

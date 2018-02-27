@@ -57,11 +57,7 @@ namespace PicDB
             {
                 string Summary = null;
 
-                if (IsValid)
-                {
-                    Summary = "Camera View Model is valid";
-                }
-                else
+                if (!IsValid)
                 {
                     if (!IsValidBoughtOn)
                     {
@@ -117,7 +113,8 @@ namespace PicDB
         {
             get
             {
-                if (BoughtOn != null && BoughtOn > DateTime.Now) return true;
+                if (BoughtOn == null) return true;
+                else if (BoughtOn < DateTime.Now) return true;
                 else return false;
             }
         }
@@ -135,8 +132,8 @@ namespace PicDB
         public ISORatings TranslateISORating(decimal iso)
         {
             if (iso == 0) return ISORatings.NotDefined;
-            else if (iso < ISOLimitGood) return ISORatings.Good;
-            else if (iso < ISOLimitAcceptable) return ISORatings.Acceptable;
+            else if (iso <= ISOLimitGood) return ISORatings.Good;
+            else if (iso <= ISOLimitAcceptable) return ISORatings.Acceptable;
             else if (iso > ISOLimitAcceptable) return ISORatings.Noisey;
             else throw new ArgumentOutOfRangeException();
         }

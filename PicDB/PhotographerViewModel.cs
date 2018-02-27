@@ -55,11 +55,7 @@ namespace PicDB
             get
             {
                 string Summary = null;
-                if (IsValid)
-                {
-                    Summary = "Photographer View Model is valid";
-                }
-                else
+                if (!IsValid)
                 {
                     if (!IsValidLastName)
                     {
@@ -79,8 +75,16 @@ namespace PicDB
         public bool IsValidLastName {
             get
             {
-                if (LastName.Length <= 50 && LastName != null) return true;
-                else return false;
+                if(!String.IsNullOrEmpty(LastName))
+                {
+                    if (LastName.Length <= 50) return true;
+                    else return false;
+                }
+                else
+                {
+                    return false;
+                }
+                
             }
         }
         
@@ -94,7 +98,7 @@ namespace PicDB
                     if (BirthDay < DateTime.Today) return true;
                     else return false;
                 }
-                else return false;
+                else return true;
             }
         }
     }

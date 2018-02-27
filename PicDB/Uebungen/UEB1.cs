@@ -12,6 +12,8 @@ namespace Uebungen
 {
     public class UEB1 : IUEB1
     {
+        string path;
+
         public IApplication GetApplication()
         {
             return new App();
@@ -24,12 +26,12 @@ namespace Uebungen
 
         public IDataAccessLayer GetAnyDataAccessLayer()
         {
-            return new DataAccessLayer("PicDB", "PicDB", "localhost", "PicDB");
+            return new MockDataAccessLayer();
         }
 
         public IBusinessLayer GetBusinessLayer()
         {
-            return new BusinessLayer();
+            return new MockBusinessLayer(path);
         }
 
         public BIF.SWE2.Interfaces.Models.IEXIFModel GetEmptyEXIFModel()
@@ -74,7 +76,7 @@ namespace Uebungen
 
         public BIF.SWE2.Interfaces.ViewModels.IPictureListViewModel GetEmptyPictureListViewModel()
         {
-            return new PictureListViewModel();
+            return new PictureListViewModel(new List<IPictureModel>());
         }
 
         public BIF.SWE2.Interfaces.Models.IPictureModel GetEmptyPictureModel()
@@ -94,6 +96,7 @@ namespace Uebungen
 
         public void TestSetup(string picturePath)
         {
+            path = picturePath;
             Directory.CreateDirectory(picturePath);
         }
 

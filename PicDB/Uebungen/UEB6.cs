@@ -11,17 +11,20 @@ namespace Uebungen
 {
     public class UEB6 : IUEB6
     {
+        string path;
+
         public void HelloWorld()
         {
         }
 
         public IBusinessLayer GetBusinessLayer()
         {
-            return new BusinessLayer();
+            return new MockBusinessLayer(path);
         }
 
         public void TestSetup(string picturePath)
         {
+            path = picturePath;
             Directory.CreateDirectory(picturePath);
         }
 

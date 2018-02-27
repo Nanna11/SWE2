@@ -18,12 +18,6 @@ namespace PicDB
 
         public EXIFModel()
         {
-            Make = "Make";
-            FNumber = 1;
-            ExposureTime = 0;
-            ISOValue = 200;
-            Flash = true;
-            ExposureProgram = ExposurePrograms.LandscapeMode;
         }
 
         public string Make {

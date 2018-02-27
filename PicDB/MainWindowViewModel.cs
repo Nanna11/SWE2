@@ -9,7 +9,7 @@ namespace PicDB
     class MainWindowViewModel : IMainWindowViewModel
     {
         ISearchViewModel _Search = new SearchViewModel();
-        IPictureListViewModel _List = new PictureListViewModel();
+        IPictureListViewModel _List = new PictureListViewModel(new List<IPictureViewModel>());
 
         public IPictureViewModel CurrentPicture => List.CurrentPicture;
 
