@@ -14,6 +14,7 @@ namespace PicDB
         IIPTCModel _IPTC = new IPTCModel();
         IEXIFModel _EXIF = new EXIFModel();
         ICameraModel _Camera;
+        IPhotographerModel _Photographer;
 
         public PictureModel(){}
 
@@ -45,6 +46,12 @@ namespace PicDB
         public ICameraModel Camera {
             get => _Camera;
             set => _Camera = value;
+        }
+
+        public IPhotographerModel Photographer
+        {
+            get => _Photographer;
+            set => _Photographer = value;
         }
     }
 }

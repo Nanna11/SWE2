@@ -14,7 +14,7 @@ namespace PicDB
         IIPTCViewModel _IPTCViewModel;
         IEXIFViewModel _EXIFViewModel;
         ICameraViewModel _CameraViewModel;
-        IPhotographerViewModel _Photographer;
+        IPhotographerViewModel _PhotographerViewModel;
 
         public PictureViewModel(IPictureModel pm)
         {
@@ -22,6 +22,8 @@ namespace PicDB
             _IPTCViewModel = new IPTCViewModel(_PictureModel.IPTC);
             _EXIFViewModel = new EXIFViewModel(_PictureModel.EXIF);
             _CameraViewModel = new CameraViewModel(_PictureModel.Camera);
+            PictureModel p = (PictureModel)_PictureModel;
+            _PhotographerViewModel = new PhotographerViewModel(p.Photographer);
         }
         public int ID => _PictureModel.ID;
 
@@ -35,7 +37,7 @@ namespace PicDB
             {
                 string dn = null;
 
-                if(IPTC.Headline != null) dn += IPTC.Headline;
+                if (IPTC.Headline != null) dn += IPTC.Headline;
                 else dn += FileName;
 
                 dn += " (by ";
@@ -53,15 +55,23 @@ namespace PicDB
                 return dn;
 
             }
-            
+
         }
 
         public IIPTCViewModel IPTC => _IPTCViewModel;
 
         public IEXIFViewModel EXIF => _EXIFViewModel;
 
-        public IPhotographerViewModel Photographer => _Photographer;
+        public IPhotographerViewModel Photographer {
+            get { return _PhotographerViewModel;}
+            set { _PhotographerViewModel = value; }
+        }
 
-        public ICameraViewModel Camera => _CameraViewModel;
+
+        public ICameraViewModel Camera
+        {
+            get { return _CameraViewModel; }
+            set { _CameraViewModel = value; }
+        }
     }
 }

@@ -143,10 +143,10 @@ namespace PicDB
 
         public IPictureModel GetPicture(int ID)
         {
-            IPictureModel pm = new PictureModel();
+            PictureModel pm = new PictureModel();
 
             SqlCommand c = new SqlCommand(null, dbc);
-            c.CommandText = "SELECT ID, FileName, Make, FNumber, ExposureTime, ISOValue, Flash, ExposureProgram, Keywords, ByLine, CopyrightNotice, Headline, Caption, fk_Cameras_ID FROM Pictures WHERE ID = @id";
+            c.CommandText = "SELECT ID, FileName, Make, FNumber, ExposureTime, ISOValue, Flash, ExposureProgram, Keywords, ByLine, CopyrightNotice, Headline, Caption, fk_Cameras_ID, fk_Photographers_ID FROM Pictures WHERE ID = @id";
             SqlParameter id = new SqlParameter("@id", SqlDbType.Int, 0);
             id.Value = ID;
             c.Parameters.Add(id);
@@ -168,6 +168,7 @@ namespace PicDB
                 pm.IPTC.Headline = dr.GetString(12);
                 pm.IPTC.Caption = dr.GetString(13);
                 pm.Camera = GetCamera(dr.GetInt32(14));
+                pm.Photographer = GetPhotographer(dr.GetInt32(15));
                 return pm;
             }
             else
@@ -181,11 +182,11 @@ namespace PicDB
             List<IPictureModel> pml = new List<IPictureModel>();
 
             SqlCommand c = new SqlCommand(null, dbc);
-            c.CommandText = "SELECT ID, FileName, Make, FNumber, ExposureTime, ISOValue, Flash, ExposureProgram, Keywords, ByLine, CopyrightNotice, Headline, Caption, fk_Cameras_ID FROM Pictures";
+            c.CommandText = "SELECT ID, FileName, Make, FNumber, ExposureTime, ISOValue, Flash, ExposureProgram, Keywords, ByLine, CopyrightNotice, Headline, Caption, fk_Cameras_ID, fk_Photographers_ID FROM Pictures";
             SqlDataReader dr = c.ExecuteReader();
             while (dr.Read())
             {
-                IPictureModel pm = new PictureModel();
+                PictureModel pm = new PictureModel();
                 pm.ID = dr.GetInt32(1);
                 pm.FileName = dr.GetString(2);
                 if (!pm.FileName.ToLower().Contains(namePart.ToLower())) continue;
@@ -201,6 +202,7 @@ namespace PicDB
                 pm.IPTC.Headline = dr.GetString(12);
                 pm.IPTC.Caption = dr.GetString(13);
                 pm.Camera = GetCamera(dr.GetInt32(14));
+                pm.Photographer = GetPhotographer(dr.GetInt32(15));
                 pml.Add(pm);
             }
 
