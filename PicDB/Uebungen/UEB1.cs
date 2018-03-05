@@ -31,7 +31,7 @@ namespace Uebungen
 
         public IBusinessLayer GetBusinessLayer()
         {
-            return new MockBusinessLayer(path);
+            return new BusinessLayer();
         }
 
         public BIF.SWE2.Interfaces.Models.IEXIFModel GetEmptyEXIFModel()
@@ -81,12 +81,12 @@ namespace Uebungen
 
         public BIF.SWE2.Interfaces.Models.IPictureModel GetEmptyPictureModel()
         {
-            return new PictureModel();
+            return new PictureModel("test.jpg");
         }
 
         public BIF.SWE2.Interfaces.ViewModels.IPictureViewModel GetEmptyPictureViewModel()
         {
-            return new PictureViewModel(new PictureModel());
+            return new PictureViewModel(new PictureModel("test.jpg"));
         }
 
         public BIF.SWE2.Interfaces.ViewModels.ISearchViewModel GetEmptySearchViewModel()
@@ -96,10 +96,10 @@ namespace Uebungen
 
         public void TestSetup(string picturePath)
         {
-            path = picturePath;
             Directory.CreateDirectory(picturePath);
             DBConnectionFactory dbf =  DBConnectionFactory.Instance;
             dbf.Mock = true;
+            new BusinessLayer(picturePath);
         }
 
         public ICameraModel GetEmptyCameraModel()

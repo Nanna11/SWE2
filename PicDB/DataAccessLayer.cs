@@ -143,7 +143,7 @@ namespace PicDB
 
         public IPictureModel GetPicture(int ID)
         {
-            PictureModel pm = new PictureModel();
+            PictureModel pm = new PictureModel("test.jpg");
 
             SqlCommand c = new SqlCommand(null, dbc);
             c.CommandText = "SELECT ID, FileName, Make, FNumber, ExposureTime, ISOValue, Flash, ExposureProgram, Keywords, ByLine, CopyrightNotice, Headline, Caption, fk_Cameras_ID, fk_Photographers_ID FROM Pictures WHERE ID = @id";
@@ -186,7 +186,7 @@ namespace PicDB
             SqlDataReader dr = c.ExecuteReader();
             while (dr.Read())
             {
-                PictureModel pm = new PictureModel();
+                PictureModel pm = new PictureModel("test.jpg");
                 pm.ID = dr.GetInt32(1);
                 pm.FileName = dr.GetString(2);
                 if (!pm.FileName.ToLower().Contains(namePart.ToLower())) continue;

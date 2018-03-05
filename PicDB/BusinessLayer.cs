@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using BIF.SWE2.Interfaces.Models;
+using System.IO;
 
 namespace PicDB
 {
@@ -11,12 +12,16 @@ namespace PicDB
     {
         PictureListViewModel pl;
         IDataAccessLayer dal = DBConnectionFactory.Instance.GetDal("PicDB", "PicDB", "localhost", "PicDB");
-        string _picturepath;
+        static string _picturepath;
 
         public BusinessLayer(string path)
         {
-            _picturepath = path;
-            Sync();
+            if(_picturepath == null) _picturepath = path;
+        }
+
+        public BusinessLayer()
+        {
+            if (_picturepath == null) throw new PathNotSetException();
         }
 
         public void DeletePhotographer(int ID)
@@ -31,12 +36,16 @@ namespace PicDB
 
         public IEXIFModel ExtractEXIF(string filename)
         {
-            return GetDemoExif();
+            IEnumerable<string> files = Directory.EnumerateFiles(_picturepath);
+            if (files.Contains(Path.Combine(_picturepath, filename))) return GetDemoExif();
+            else throw new FileNotFoundException();
         }
 
         public IIPTCModel ExtractIPTC(string filename)
         {
-            return GetDemoIPTC();
+            IEnumerable<string> files = Directory.EnumerateFiles(_picturepath);
+            if (files.Contains(Path.Combine(_picturepath, filename))) return GetDemoIPTC();
+            else throw new FileNotFoundException();
         }
 
         public ICameraModel GetCamera(int ID)
@@ -86,12 +95,40 @@ namespace PicDB
 
         public void Sync()
         {
-            throw new NotImplementedException();
+            IEnumerable<string> tmp = Directory.EnumerateFiles(_picturepath);
+            List<string> files = new List<string>();
+            foreach (string s in tmp)
+            {
+                files.Add(Path.GetFileName(s));
+            }
+
+            List<IPictureModel> pics = dal.GetPictures(null, null, null, null).ToList();
+
+
+            foreach (IPictureModel s in pics)
+            {
+                if (!files.Contains<string>(s.FileName))
+                {
+                    DeletePicture(s.ID);
+                }
+                else
+                {
+                    files.Remove(s.FileName);
+                }
+            }
+
+            foreach (string s in files)
+            {
+                IPictureModel pm = new PictureModel(s);
+                pm.EXIF = ExtractEXIF(s);
+                pm.IPTC = ExtractIPTC(s);
+                Save(pm);
+            }
         }
 
         public void WriteIPTC(string filename, IIPTCModel iptc)
         {
-            throw new NotImplementedException();
+            
         }
 
         private IEXIFModel GetDemoExif()

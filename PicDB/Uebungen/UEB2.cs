@@ -12,6 +12,7 @@ namespace Uebungen
 {
     public class UEB2 : IUEB2
     {
+        IBusinessLayer bl;
         string path;
 
         public void HelloWorld()
@@ -20,7 +21,7 @@ namespace Uebungen
 
         public IBusinessLayer GetBusinessLayer()
         {
-            return new MockBusinessLayer(path);
+            return new BusinessLayer();
         }
 
         public BIF.SWE2.Interfaces.ViewModels.IMainWindowViewModel GetMainWindowViewModel()
@@ -40,10 +41,10 @@ namespace Uebungen
 
         public void TestSetup(string picturePath)
         {
-            path = picturePath;
             Directory.CreateDirectory(picturePath);
             DBConnectionFactory dbf = DBConnectionFactory.Instance;
             dbf.Mock = true;
+            new BusinessLayer(picturePath);
         }
 
         public ICameraModel GetCameraModel(string producer, string make)

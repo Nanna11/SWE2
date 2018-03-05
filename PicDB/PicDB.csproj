@@ -63,7 +63,6 @@
     <Compile Include="BusinessLayer.cs" />
     <Compile Include="DBConnectionFactory.cs" />
     <Compile Include="Converters.cs" />
-    <Compile Include="MockBusinessLayer.cs" />
     <Compile Include="CameraListViewModel.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="MockDataAccessLayer.cs" />

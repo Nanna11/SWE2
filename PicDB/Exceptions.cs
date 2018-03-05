@@ -16,3 +16,20 @@ public class ElementWithIdDoesNotExistException : Exception
     {
     }
 }
+
+public class PathNotSetException : Exception
+{
+    public PathNotSetException()
+    {
+    }
+
+    public PathNotSetException(string message)
+        : base(message)
+    {
+    }
+
+    public PathNotSetException(string message, Exception inner)
+        : base(message, inner)
+    {
+    }
+}

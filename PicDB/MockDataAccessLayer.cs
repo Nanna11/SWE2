@@ -17,10 +17,13 @@ namespace PicDB
 
         public MockDataAccessLayer()
         {
-            IPictureModel p = new PictureModel("Blume.jpg");
-            picl.Add(p);
-            phol.Add(new PhotorapherModel());
-            caml.Add(new CameraModel());
+            IPictureModel p = new PictureModel("ASonne.jpg");
+            Save(p);
+            p = new PictureModel("Blume.jpg");
+            Save(p);
+            Save(new PhotorapherModel());
+            Save(new PhotorapherModel());
+            Save(new CameraModel());
         }
 
         public void DeletePhotographer(int ID)
@@ -51,6 +54,20 @@ namespace PicDB
             }
         }
 
+        public void DeleteCamera(int ID)
+        {
+            List<ICameraModel> del = new List<ICameraModel>();
+            foreach (ICameraModel p in picl)
+            {
+                if (p.ID == ID) del.Add(p);
+            }
+
+            foreach (ICameraModel p in del)
+            {
+                caml.Remove(p);
+            }
+        }
+
         public ICameraModel GetCamera(int ID)
         {
             return new CameraModel();
@@ -73,12 +90,22 @@ namespace PicDB
 
         public IPictureModel GetPicture(int ID)
         {
-            return new PictureModel();
+            return new PictureModel("test.jpg");
         }
 
         public IEnumerable<IPictureModel> GetPictures(string namePart, IPhotographerModel photographerParts, BIF.SWE2.Interfaces.Models.IIPTCModel iptcParts, IEXIFModel exifParts)
         {
-            if(!string.IsNullOrEmpty(namePart))
+            if(namePart != null)
+            {
+                IPictureModel pi = new PictureModel("Blume.jpg");
+                foreach(IPictureModel pm in picl)
+                {
+                    if (pm.FileName == pi.FileName) pi.ID = pm.ID;
+                }
+                Save(pi);
+            }
+            
+            if (!string.IsNullOrEmpty(namePart))
             {
                 List<IPictureModel> result = new List<IPictureModel>();
                 foreach(IPictureModel p in picl)
@@ -148,6 +175,34 @@ namespace PicDB
                 photographer.ID = max + 1;
             }
             phol.Add(photographer);
+        }
+
+        public void Save(ICameraModel camera)
+        {
+            int max = 0;
+            ICameraModel del = null;
+
+            if (camera.ID > 0)
+            {
+                foreach (ICameraModel p in caml)
+                {
+                    if (p.ID == camera.ID)
+                    {
+                        del = p;
+                        break;
+                    }
+                }
+                caml.Remove(del); //Add errorhandling here
+            }
+            else
+            {
+                foreach (ICameraModel p in caml)
+                {
+                    if (p.ID > max) max = p.ID;
+                }
+                camera.ID = max + 1;
+            }
+            caml.Add(camera);
         }
     }
 }

@@ -16,8 +16,6 @@ namespace PicDB
         ICameraModel _Camera;
         IPhotographerModel _Photographer;
 
-        public PictureModel(){}
-
         public PictureModel(string fn)
         {
             FileName = fn;

@@ -20,15 +20,15 @@ namespace Uebungen
 
         public IBusinessLayer GetBusinessLayer()
         {
-            return new MockBusinessLayer(path);
+            return new BusinessLayer();
         }
 
         public void TestSetup(string picturePath)
         {
-            path = picturePath;
             Directory.CreateDirectory(picturePath);
             DBConnectionFactory dbf = DBConnectionFactory.Instance;
             dbf.Mock = true;
+            new BusinessLayer(picturePath);
         }
 
         public IEXIFModel GetEmptyEXIFModel()

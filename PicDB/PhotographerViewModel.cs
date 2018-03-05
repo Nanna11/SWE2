@@ -15,7 +15,14 @@ namespace PicDB
 
         public PhotographerViewModel(IPhotographerModel pm)
         {
-            _PhotographerModel = pm;
+            if(pm != null)
+            {
+                _PhotographerModel = pm;
+            }
+            else
+            {
+                _PhotographerModel = new PhotorapherModel();
+            }
         }
         public int ID => _PhotographerModel.ID;
 
