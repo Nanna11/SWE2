@@ -27,6 +27,8 @@ namespace Uebungen
         {
             path = picturePath;
             Directory.CreateDirectory(picturePath);
+            DBConnectionFactory dbf = DBConnectionFactory.Instance;
+            dbf.Mock = true;
         }
 
         public IEXIFModel GetEmptyEXIFModel()

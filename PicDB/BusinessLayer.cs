@@ -10,7 +10,7 @@ namespace PicDB
     class BusinessLayer : IBusinessLayer
     {
         PictureListViewModel pl;
-        IDataAccessLayer dal = new DataAccessLayer("PicDB", "PicDB", "localhost", "PicDB");
+        IDataAccessLayer dal = DBConnectionFactory.Instance.GetDal("PicDB", "PicDB", "localhost", "PicDB");
         string _picturepath;
 
         public BusinessLayer(string path)

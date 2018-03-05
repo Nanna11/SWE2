@@ -26,7 +26,7 @@ namespace Uebungen
 
         public IDataAccessLayer GetAnyDataAccessLayer()
         {
-            return new MockDataAccessLayer();
+            return DBConnectionFactory.Instance.GetDal("PicDB", "PicDB", "localhost", "PicDB");
         }
 
         public IBusinessLayer GetBusinessLayer()
@@ -98,6 +98,8 @@ namespace Uebungen
         {
             path = picturePath;
             Directory.CreateDirectory(picturePath);
+            DBConnectionFactory dbf =  DBConnectionFactory.Instance;
+            dbf.Mock = true;
         }
 
         public ICameraModel GetEmptyCameraModel()

@@ -36,13 +36,15 @@ namespace PicDB
 
         public IEXIFModel ExtractEXIF(string filename)
         {
-            IEnumerable<string> files = Directory.EnumerateFiles(_path);            if (files.Contains(Path.Combine(_path, filename))) return GetDemoExif();
+            IEnumerable<string> files = Directory.EnumerateFiles(_path);
+            if (files.Contains(Path.Combine(_path, filename))) return GetDemoExif();
             else throw new FileNotFoundException();
         }
 
         public IIPTCModel ExtractIPTC(string filename)
         {
-            IEnumerable<string> files = Directory.EnumerateFiles(_path);            if (files.Contains(Path.Combine(_path, filename))) return GetDemoIPTC();
+            IEnumerable<string> files = Directory.EnumerateFiles(_path);
+            if (files.Contains(Path.Combine(_path, filename))) return GetDemoIPTC();
             else throw new FileNotFoundException();
         }
 
