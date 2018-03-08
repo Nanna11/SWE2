@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Media.Imaging;
 
 namespace PicDB
 {
@@ -21,9 +22,9 @@ namespace PicDB
         public PictureListViewModel(IEnumerable<IPictureModel> p)
         {
             _List = new List<IPictureViewModel>();
-            foreach(IPictureModel pic in p)
+            foreach(PictureModel pic in p)
             {
-                IPictureViewModel v = new PictureViewModel(pic);
+                PictureViewModel v = new PictureViewModel(pic);
                 _List.Add(v);
             }
         }
@@ -71,5 +72,6 @@ namespace PicDB
         public int CurrentIndex => _CurrentIndex;
 
         public string CurrentPictureAsString => CurrentPicture.DisplayName;
+
     }
 }

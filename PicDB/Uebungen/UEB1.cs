@@ -99,7 +99,12 @@ namespace Uebungen
             Directory.CreateDirectory(picturePath);
             DBConnectionFactory dbf =  DBConnectionFactory.Instance;
             dbf.Mock = true;
-            new BusinessLayer(picturePath);
+            try
+            {
+                GlobalInformation gi = GlobalInformation.InitializeInstance(picturePath);
+            }
+            catch (Exception) { }
+            
         }
 
         public ICameraModel GetEmptyCameraModel()

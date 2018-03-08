@@ -5,23 +5,43 @@ using System.Linq;
 using System.Text;
 using BIF.SWE2.Interfaces.Models;
 using System.IO;
+using System.Reflection;
 
 namespace PicDB
 {
     class BusinessLayer : IBusinessLayer
     {
-        PictureListViewModel pl;
         IDataAccessLayer dal = DBConnectionFactory.Instance.GetDal("PicDB", "PicDB", "localhost", "PicDB");
         static string _picturepath;
 
         public BusinessLayer(string path)
         {
-            if(_picturepath == null) _picturepath = path;
+            string folder;
+            try
+            {
+                folder = GlobalInformation.Instance.Folder;
+            }
+            catch (SingletonNotInitializedException)
+            {
+                throw new PathNotSetException();
+            }
+            string deploypath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            _picturepath = Path.Combine(deploypath, folder);
         }
 
         public BusinessLayer()
         {
-            if (_picturepath == null) throw new PathNotSetException();
+            string folder;
+            try
+            {
+                folder = GlobalInformation.Instance.Folder;
+            }
+            catch (SingletonNotInitializedException)
+            {
+                throw new PathNotSetException();
+            }
+            string deploypath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            _picturepath = Path.Combine(deploypath, folder);
         }
 
         public void DeletePhotographer(int ID)
@@ -135,7 +155,7 @@ namespace PicDB
         {
             EXIFModel e = new EXIFModel();
             e.Make = "Make";
-            e.FNumber = 1;
+            e.FNumber = 2;
             e.ExposureTime = 5;
             e.ISOValue = 200;
             e.Flash = true;

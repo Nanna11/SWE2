@@ -33,3 +33,37 @@ public class PathNotSetException : Exception
     {
     }
 }
+
+public class SingletonInitializedTwiceException : Exception
+{
+    public SingletonInitializedTwiceException()
+    {
+    }
+
+    public SingletonInitializedTwiceException(string message)
+        : base(message)
+    {
+    }
+
+    public SingletonInitializedTwiceException(string message, Exception inner)
+        : base(message, inner)
+    {
+    }
+}
+
+public class SingletonNotInitializedException : Exception
+{
+    public SingletonNotInitializedException()
+    {
+    }
+
+    public SingletonNotInitializedException(string message)
+        : base(message)
+    {
+    }
+
+    public SingletonNotInitializedException(string message, Exception inner)
+        : base(message, inner)
+    {
+    }
+}

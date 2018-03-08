@@ -61,6 +61,8 @@
     <Compile Include="CameraModel.cs" />
     <Compile Include="CameraViewModel.cs" />
     <Compile Include="BusinessLayer.cs" />
+    <Compile Include="EnumBindingSourceExtension.cs" />
+    <Compile Include="GlobalInformation.cs" />
     <Compile Include="DBConnectionFactory.cs" />
     <Compile Include="Converters.cs" />
     <Compile Include="CameraListViewModel.cs" />
