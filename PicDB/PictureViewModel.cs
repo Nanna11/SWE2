@@ -27,12 +27,27 @@ namespace PicDB
             _IPTCViewModel = new IPTCViewModel(_PictureModel.IPTC);
             _EXIFViewModel = new EXIFViewModel(_PictureModel.EXIF);
             _CameraViewModel = new CameraViewModel(_PictureModel.Camera);
+            ((IPTCViewModel)_IPTCViewModel).PropertyChanged += new PropertyChangedEventHandler(SubPropertyChanged);
             PictureModel p = (PictureModel)_PictureModel;
             if (_PictureModel.Photographer != null) _PhotographerViewModel = new PhotographerViewModel(_PictureModel.Photographer);
         }
         public int ID => _PictureModel.ID;
 
-        public string FileName => _PictureModel.FileName;
+        public string FileName
+        {
+            get
+            {
+                 return _PictureModel.FileName;
+            }
+
+            set
+            {
+                _PictureModel.FileName = value;
+                OnPropertyChanged("FileName");
+                OnPropertyChanged("FilePath");
+                OnPropertyChanged("DisplayName");
+            }
+        }
 
         public string FilePath
         {
@@ -79,20 +94,54 @@ namespace PicDB
 
         }
 
-        public IIPTCViewModel IPTC => _IPTCViewModel;
+        public IIPTCViewModel IPTC
+        {
+            get
+            {
+                return _IPTCViewModel;
+            }
 
-        public IEXIFViewModel EXIF => _EXIFViewModel;
+            set
+            {
+                _IPTCViewModel = value;
+                ((IPTCViewModel)_IPTCViewModel).PropertyChanged += new PropertyChangedEventHandler(SubPropertyChanged);
+                OnPropertyChanged("IPTC");
+                OnPropertyChanged("DisplayName");
+            }
+        }
+
+        public IEXIFViewModel EXIF
+        {
+            get
+            {
+                return _EXIFViewModel;
+            }
+
+            set
+            {
+                _EXIFViewModel = value;
+                OnPropertyChanged("EXIF");
+            }
+        }
 
         public IPhotographerViewModel Photographer {
             get { return _PhotographerViewModel;}
-            set { _PhotographerViewModel = value; }
+            set
+            {
+                _PhotographerViewModel = value;
+                OnPropertyChanged("Photographer");
+            }
         }
 
 
         public ICameraViewModel Camera
         {
             get { return _CameraViewModel; }
-            set { _CameraViewModel = value; }
+            set
+            {
+                _CameraViewModel = value;
+                OnPropertyChanged("Camera");
+            }
         }
 
         public PictureModel PictureModel
@@ -110,6 +159,11 @@ namespace PicDB
             {
                 handler(this, new PropertyChangedEventArgs(name));
             }
+        }
+
+        private void SubPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if(sender == _IPTCViewModel && (e.PropertyName == "ByLine" || e.PropertyName == "Headline")) OnPropertyChanged("DisplayName");
         }
     }
 }

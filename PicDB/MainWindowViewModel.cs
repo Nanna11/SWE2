@@ -24,16 +24,44 @@ namespace PicDB
             }
         }
 
+        public int CurrentIndex
+        {
+            get
+            {
+                return List.CurrentIndex;
+            }
 
-        public IPictureListViewModel List => _List;
+            set
+            {
+                ((PictureListViewModel)List).CurrentIndex = value;
+                OnPropertyChanged("CurrentPicture");
+                OnPropertyChanged("CurrentIndex");
+            }
+        }
+
+
+
+        public IPictureListViewModel List
+        {
+            get
+            {
+                return _List;
+            }
+
+            set
+            {
+                _List = value;
+                OnPropertyChanged("List");
+                OnPropertyChanged("CurrentPicture");
+            }
+        }
 
         public ISearchViewModel Search => _Search;
         
         public MainWindowViewModel()
         {
             bl.Sync();
-            _List = new PictureListViewModel(bl.GetPictures(null, null, null, null));
-            ((PictureListViewModel)_List).PropertyChanged += new PropertyChangedEventHandler(SubPropertyChanged);
+            List = new PictureListViewModel(bl.GetPictures(null, null, null, null));
             
         }
 
@@ -51,16 +79,10 @@ namespace PicDB
             }
         }
 
-        private void SubPropertyChanged(object sender, PropertyChangedEventArgs e)
+        public void SearchPictures(string s)
         {
-            OnPropertyChanged(e.PropertyName);
-            Trace.WriteLine(e.PropertyName);
+            List = new PictureListViewModel(bl.GetPictures(s, null, null, null));
         }
 
-        public void ChangeIndex()
-        {
-            ((PictureListViewModel)_List).CurrentIndex = 1;
-            OnPropertyChanged("CurrentPicture");
-        }
     }
 }

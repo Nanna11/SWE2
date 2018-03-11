@@ -118,12 +118,22 @@ namespace PicDB
             }
 
             mw.CurrentPictureChanged();
-            
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void SearchTextKeyDown(object sender, KeyEventArgs e)
         {
-            mw.ChangeIndex();
+            if (e.Key == Key.Return)
+            {
+                mw.SearchPictures(SearchText.Text);
+            }
+        }
+
+        private void SearchTextKeyUp(object sender, KeyEventArgs e)
+        {
+            if ((sender as TextBox).Text == "")
+            {
+                mw.SearchPictures(null);
+            }
         }
     }
 }

@@ -15,17 +15,13 @@
         <local:NullToCollapsedConverter x:Key="NullToCollapsedConverter" />
         <local:FalseToCollapsedConverter x:Key="FalseToCollapsedConverter" />
         <local:NullToFalseConverter x:Key="NullToFalseConverter" />
+        <local:PathToBitmapImageConverter x:Key="PathToBitmapImageConverter" />
         <Style x:Key="EntryFieldStyle" TargetType="Grid" >
             <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="Margin" Value="20,0" />
         </Style>
-        <ObjectDataProvider x:Key="dataFromEnum" MethodName="GetValues"
-                        ObjectType="{x:Type sys:Enum}">
-            <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="Interfaces:ExposurePrograms"/>
-            </ObjectDataProvider.MethodParameters>
-        </ObjectDataProvider>
+        <BitmapImage x:Key="LandscapeMode" UriSource="./deploy/Media/LandscapeMode.png" />
     </Window.Resources>
     <Grid>
         <TabControl HorizontalAlignment="Left" Height="561" VerticalAlignment="Top" Width="884" BorderThickness="0">
@@ -44,12 +40,12 @@
                         <TextBlock Padding="15,0,0,0" Text="Search..." Foreground="{StaticResource brushWatermarkForeground}" VerticalAlignment="Center" FontSize="14" >
                             <TextBlock.Visibility>
                                 <MultiBinding Converter="{StaticResource TextInputToVisibilityConverter}">
-                                    <Binding ElementName="txtUserEntry2" Path="Text.IsEmpty" />
-                                    <Binding ElementName="txtUserEntry2" Path="IsFocused" />
+                                    <Binding ElementName="SearchText" Path="Text.IsEmpty" />
+                                    <Binding ElementName="SearchText" Path="IsFocused" />
                                 </MultiBinding>
                             </TextBlock.Visibility>
                         </TextBlock>
-                        <TextBox Padding="15,0,0,0" Name="txtUserEntry2" Background="Transparent" BorderBrush="{StaticResource brushWatermarkBorder}" VerticalContentAlignment="Center" VerticalAlignment="Stretch" FontSize="14"/>
+                        <TextBox Padding="15,0,0,0" x:Name="SearchText" Background="Transparent" BorderBrush="{StaticResource brushWatermarkBorder}" VerticalContentAlignment="Center" KeyUp="SearchTextKeyUp" KeyDown="SearchTextKeyDown" VerticalAlignment="Stretch" FontSize="14"/>
                     </Grid>
                     <TabControl Grid.Column="1" HorizontalAlignment="Stretch"  Grid.Row="1" VerticalAlignment="Stretch" DataContext="{Binding CurrentPicture}">
                         <TabControl.IsEnabled>
@@ -72,7 +68,9 @@
                                             <ColumnDefinition Width="2*"></ColumnDefinition>
                                         </Grid.ColumnDefinitions>
                                         <Label Grid.Column="0" Content="Filepath:" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Top"/>
-                                        <Label Grid.Column="1" Content="{Binding FilePath, FallbackValue=''}" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Top"/>
+                                        <TextBlock TextWrapping="WrapWithOverflow" Grid.Column="1" Text="{Binding FilePath, FallbackValue=''}" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Top">
+
+                                        </TextBlock>
                                     </Grid>
                                 </StackPanel>
                             </Grid>
@@ -195,13 +193,9 @@
                                 </MultiBinding>
                             </Label.Visibility>
                         </Label>
-                        <Image DataContext="{Binding CurrentPicture}" Name="CurrentImage" Stretch="Uniform" StretchDirection="DownOnly" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center" Margin="20,20,20,20" VerticalAlignment="Stretch">
-                            <Image.Source>
-                                <BitmapImage UriSource="{Binding FilePath, FallbackValue=null}">
-                                </BitmapImage>
-                            </Image.Source>
+                        <Image DataContext="{Binding CurrentPicture}" Source="{Binding FilePath, Converter={StaticResource PathToBitmapImageConverter}}" Name="CurrentImage" Stretch="Uniform" StretchDirection="DownOnly" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center" Margin="20,20,20,20" VerticalAlignment="Stretch">
                         </Image>
-                        <Label Grid.Row="1" Grid.Column="0" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Center" FontSize="14" FontWeight="Bold" Content="{Binding CurrentPicture.DisplayName, FallbackValue=null}">
+                        <Label Grid.Row="1" Grid.Column="0" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Center" FontSize="14" FontWeight="Bold" DataContext ="{Binding CurrentPicture}" Content="{Binding DisplayName, FallbackValue=null}">
                             <Label.Visibility>
                                 <MultiBinding Converter="{StaticResource NullToInvisibleConverter}">
                                     <Binding ElementName="CurrentImage" Path="Source"/>
@@ -209,14 +203,18 @@
                             </Label.Visibility>
                         </Label>
                     </Grid>
-                    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" DataContext="{Binding List}">
-                        <ListBox SelectedIndex="{Binding CurrentIndex}" ItemsSource="{Binding List}" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Disabled" BorderThickness="0" Margin="0">
-                        <ListBox.ItemsPanel>
-                            <ItemsPanelTemplate>
+                    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="95*"/>
+                            <ColumnDefinition Width="786*"/>
+                        </Grid.ColumnDefinitions>
+                        <ListBox SelectedIndex="{Binding CurrentIndex}" ItemsSource="{Binding List.List}" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Disabled" BorderThickness="0" Margin="0" Grid.ColumnSpan="2">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
                                     <VirtualizingStackPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsItemsHost="True" Orientation="Horizontal"/>
-                            </ItemsPanelTemplate>
-                        </ListBox.ItemsPanel>
-                        <ListBox.ItemTemplate>
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                            <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <Grid VerticalAlignment="Stretch">
                                         <Grid.RowDefinitions>
@@ -229,16 +227,15 @@
                                                 </BitmapImage>
                                             </Image.Source>
                                         </Image>
-                                    <Label Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Center" Content="{Binding FileName, FallbackValue='unnamed'}">
-                                    </Label>
+                                        <Label Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Center" Content="{Binding FileName, FallbackValue='unnamed'}">
+                                        </Label>
                                     </Grid>
-                                    
+
                                 </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
                     </Grid>
-                    <Button x:Name="Save" Content="Save" HorizontalAlignment="Left" Margin="10,5,0,0" Grid.Row="1" VerticalAlignment="Top" Width="75" Click="Save_Click"/>
-                    <Button Content="Button" HorizontalAlignment="Left" Margin="45,66,0,0" Grid.Row="1" VerticalAlignment="Top" Width="75"/>
+                    <Button x:Name="Save" Content="Save" HorizontalAlignment="Left" Margin="165,374,0,0" Grid.Row="1" VerticalAlignment="Top" Width="75" Click="Save_Click" Grid.Column="1"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Photographers">

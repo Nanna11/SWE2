@@ -83,6 +83,7 @@ namespace PicDB
             set
             {
                 _CurrentIndex = value;
+                if (_CurrentIndex < 0) _CurrentIndex = 0;
                 OnPropertyChanged("CurrentIndex");
                 OnPropertyChanged("CurrentPicture");
             }
