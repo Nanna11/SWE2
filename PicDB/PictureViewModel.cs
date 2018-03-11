@@ -8,25 +8,27 @@ using BIF.SWE2.Interfaces.Models;
 using System.IO;
 using System.Reflection;
 using System.Windows.Media.Imaging;
+using System.ComponentModel;
 
 namespace PicDB
 {
-    class PictureViewModel : IPictureViewModel
+    class PictureViewModel : IPictureViewModel, INotifyPropertyChanged
     {
-        IPictureModel _PictureModel;
+        PictureModel _PictureModel;
         IIPTCViewModel _IPTCViewModel;
         IEXIFViewModel _EXIFViewModel;
         ICameraViewModel _CameraViewModel;
         IPhotographerViewModel _PhotographerViewModel;
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public PictureViewModel(IPictureModel pm)
         {
-            _PictureModel = pm;
+            _PictureModel = (PictureModel)pm;
             _IPTCViewModel = new IPTCViewModel(_PictureModel.IPTC);
             _EXIFViewModel = new EXIFViewModel(_PictureModel.EXIF);
             _CameraViewModel = new CameraViewModel(_PictureModel.Camera);
             PictureModel p = (PictureModel)_PictureModel;
-            _PhotographerViewModel = new PhotographerViewModel(p.Photographer);
+            if (_PictureModel.Photographer != null) _PhotographerViewModel = new PhotographerViewModel(_PictureModel.Photographer);
         }
         public int ID => _PictureModel.ID;
 
@@ -56,7 +58,7 @@ namespace PicDB
             {
                 string dn = null;
 
-                if (IPTC.Headline != null) dn += IPTC.Headline;
+                if (!string.IsNullOrEmpty(IPTC.Headline)) dn += IPTC.Headline;
                 else dn += FileName;
 
                 dn += " (by ";
@@ -93,15 +95,20 @@ namespace PicDB
             set { _CameraViewModel = value; }
         }
 
-        public BitmapImage ImageResource
+        public PictureModel PictureModel
         {
             get
             {
-                BitmapImage bi = new BitmapImage();
-                bi.BeginInit();
-                bi.UriSource = new Uri(FilePath);
-                bi.EndInit();
-                return bi;
+                return _PictureModel;
+            }
+        }
+
+        protected void OnPropertyChanged(string name)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(name));
             }
         }
     }

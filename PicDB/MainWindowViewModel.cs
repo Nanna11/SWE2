@@ -2,21 +2,28 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
 namespace PicDB
 {
-    class MainWindowViewModel : IMainWindowViewModel
+    class MainWindowViewModel : IMainWindowViewModel, INotifyPropertyChanged
     {
         ISearchViewModel _Search = new SearchViewModel();
         IPictureListViewModel _List;
         BusinessLayer bl = new BusinessLayer();
 
-        //public event PropertyChangedEventHandler PropertyChanged;
-        //private IPictureViewModel _pvm;
+        public event PropertyChangedEventHandler PropertyChanged;
 
-        public IPictureViewModel CurrentPicture => List.CurrentPicture;
+        public IPictureViewModel CurrentPicture
+        {
+            get
+            {
+                return List.CurrentPicture;
+            }
+        }
+
 
         public IPictureListViewModel List => _List;
 
@@ -24,33 +31,36 @@ namespace PicDB
         
         public MainWindowViewModel()
         {
-            //pvm = new PictureViewModel(new PictureModel("Img1.jpg"));
             bl.Sync();
             _List = new PictureListViewModel(bl.GetPictures(null, null, null, null));
+            ((PictureListViewModel)_List).PropertyChanged += new PropertyChangedEventHandler(SubPropertyChanged);
             
         }
 
-        //protected void OnPropertyChanged(string name)
-        //{
-        //    PropertyChangedEventHandler handler = PropertyChanged;
-        //    if (handler != null)
-        //    {
-        //        handler(this, new PropertyChangedEventArgs(name));
-        //    }
-        //}
+        internal void CurrentPictureChanged()
+        {
+            bl.CurrentPictureChanged(CurrentPicture);
+        }
 
-        //public IPictureViewModel pvm
-        //{
-        //    get
-        //    {
-        //        return _pvm;
-        //    }
+        protected void OnPropertyChanged(string name)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(name));
+            }
+        }
 
-        //    set
-        //    {
-        //        _pvm = value;
-        //        OnPropertyChanged("pvm");
-        //    }
-        //}
+        private void SubPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            OnPropertyChanged(e.PropertyName);
+            Trace.WriteLine(e.PropertyName);
+        }
+
+        public void ChangeIndex()
+        {
+            ((PictureListViewModel)_List).CurrentIndex = 1;
+            OnPropertyChanged("CurrentPicture");
+        }
     }
 }

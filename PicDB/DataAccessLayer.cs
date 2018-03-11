@@ -7,6 +7,7 @@ using BIF.SWE2.Interfaces.Models;
 using System.Data.SqlClient;
 using System.Data;
 using System.Data.SqlTypes;
+using System.Diagnostics;
 
 namespace PicDB
 {
@@ -214,13 +215,19 @@ namespace PicDB
                 {
                     pm.Camera = GetCamera(dr.GetInt32(13));
                 }
-                catch (SqlNullValueException) { }
+                catch (SqlNullValueException)
+                {
+                    pm.Camera = null;
+                }
 
                 try
                 {
                     pm.Photographer = GetPhotographer(dr.GetInt32(14));
                 }
-                catch (SqlNullValueException) { }
+                catch (SqlNullValueException)
+                {
+                    pm.Photographer = null;
+                }
                 pml.Add(pm);
             }
             dr.Close();
@@ -229,10 +236,16 @@ namespace PicDB
 
         public void Save(IPictureModel picture)
         {
+            if (picture.ID > 0) UpdatePicture(picture);
+            else InsertPicture(picture);            
+        }
+
+        private void UpdatePicture(IPictureModel picture)
+        {
             PictureModel p = (PictureModel)picture;
 
             SqlCommand c = new SqlCommand(null, dbc);
-            c.CommandText = "INSERT INTO Pictures (FileName, Make, FNumber, ExposureTime, ISOValue, Flash, ExposureProgram, Keywords, ByLine, CopyrightNotice, Headline, Caption, fk_Cameras_ID, fk_Photographers_ID) VALUES (@FileName, @Make, @FNumber, @ExposureTime, @ISOValue, @Flash, @ExposureProgram, @Keywords, @ByLine, @CopyrightNotice, @Headline, @Caption, @fk_Cameras_ID, @fk_Photographers_ID)";
+            c.CommandText = "UPDATE Pictures  SET FileName = @FileName, Make = @Make, FNumber = @FNumber, ExposureTime = @ExposureTime, ISOValue = @ISOValue, Flash = @Flash, ExposureProgram = @ExposureProgram, Keywords = @Keywords, ByLine = @ByLine, CopyrightNotice = @CopyrightNotice, Headline = @Headline, Caption = @Caption, fk_Cameras_ID = @fk_Cameras_ID WHERE ID = @ID";
 
             SqlParameter filename = new SqlParameter("@FileName", SqlDbType.Text, p.FileName.Length);
             filename.Value = p.FileName;
@@ -245,7 +258,7 @@ namespace PicDB
             SqlParameter FNumber = new SqlParameter("@FNumber", SqlDbType.Decimal, 0);
             FNumber.Precision = 18;
             FNumber.Scale = 2;
-            FNumber.Value = (decimal) p.EXIF.FNumber;
+            FNumber.Value = (decimal)p.EXIF.FNumber;
             c.Parameters.Add(FNumber);
 
             SqlParameter ExposureTime = new SqlParameter("@ExposureTime", SqlDbType.Decimal, 0);
@@ -299,19 +312,124 @@ namespace PicDB
             }
             c.Parameters.Add(fk_Cameras_ID);
 
-            SqlParameter fk_Photographers_ID = new SqlParameter("@fk_Photographers_ID", SqlDbType.Int, 0);
+            SqlParameter ID = new SqlParameter("@ID", SqlDbType.Int, 0);
+            ID.Value = p.ID;
+            c.Parameters.Add(ID);
+
+            //SqlParameter fk_Photographers_ID = new SqlParameter("@fk_Photographers_ID", SqlDbType.Int, 0);
+            //try
+            //{
+            //    fk_Photographers_ID.Value = p.Photographer.ID;
+            //}
+            //catch (NullReferenceException)
+            //{
+            //    fk_Cameras_ID.Value = DBNull.Value;
+            //}
+            //c.Parameters.Add(fk_Photographers_ID);
+
+            c.Prepare();
             try
             {
-                fk_Photographers_ID.Value = p.Photographer.ID;
+                c.ExecuteReader();
+            }
+            catch (SqlException e)
+            {
+                Trace.WriteLine(e.Message);
+            }
+        }
+
+        private void InsertPicture(IPictureModel picture)
+        {
+            PictureModel p = (PictureModel)picture;
+
+            SqlCommand c = new SqlCommand(null, dbc);
+            c.CommandText = "INSERT INTO Pictures (FileName, Make, FNumber, ExposureTime, ISOValue, Flash, ExposureProgram, Keywords, ByLine, CopyrightNotice, Headline, Caption, fk_Cameras_ID) VALUES (@FileName, @Make, @FNumber, @ExposureTime, @ISOValue, @Flash, @ExposureProgram, @Keywords, @ByLine, @CopyrightNotice, @Headline, @Caption, @fk_Cameras_ID)";
+
+            SqlParameter filename = new SqlParameter("@FileName", SqlDbType.Text, p.FileName.Length);
+            filename.Value = p.FileName;
+            c.Parameters.Add(filename);
+
+            SqlParameter Make = new SqlParameter("@Make", SqlDbType.Text, string.IsNullOrEmpty(p.EXIF.Make) ? 1 : p.EXIF.Make.Length);
+            Make.Value = p.EXIF.Make;
+            c.Parameters.Add(Make);
+
+            SqlParameter FNumber = new SqlParameter("@FNumber", SqlDbType.Decimal, 0);
+            FNumber.Precision = 18;
+            FNumber.Scale = 2;
+            FNumber.Value = (decimal)p.EXIF.FNumber;
+            c.Parameters.Add(FNumber);
+
+            SqlParameter ExposureTime = new SqlParameter("@ExposureTime", SqlDbType.Decimal, 0);
+            ExposureTime.Precision = 18;
+            ExposureTime.Scale = 2;
+            ExposureTime.Value = (decimal)p.EXIF.ExposureTime;
+            c.Parameters.Add(ExposureTime);
+
+            SqlParameter ISOValue = new SqlParameter("@ISOValue", SqlDbType.Decimal, 0);
+            ISOValue.Precision = 18;
+            ISOValue.Scale = 2;
+            ISOValue.Value = (decimal)p.EXIF.ISOValue;
+            c.Parameters.Add(ISOValue);
+
+            SqlParameter Flash = new SqlParameter("@Flash", SqlDbType.Bit, 0);
+            Flash.Value = p.EXIF.Flash;
+            c.Parameters.Add(Flash);
+
+            SqlParameter ExposureProgram = new SqlParameter("@ExposureProgram", SqlDbType.Int, 0);
+            ExposureProgram.Value = p.EXIF.ExposureProgram;
+            c.Parameters.Add(ExposureProgram);
+
+            SqlParameter Keywords = new SqlParameter("@Keywords", SqlDbType.Text, string.IsNullOrEmpty(p.IPTC.Keywords) ? 1 : p.IPTC.Keywords.Length);
+            Keywords.Value = p.IPTC.Keywords;
+            c.Parameters.Add(Keywords);
+
+            SqlParameter ByLine = new SqlParameter("@ByLine", SqlDbType.Text, string.IsNullOrEmpty(p.IPTC.ByLine) ? 1 : p.IPTC.ByLine.Length);
+            ByLine.Value = p.IPTC.ByLine;
+            c.Parameters.Add(ByLine);
+
+            SqlParameter CopyrightNotice = new SqlParameter("@CopyrightNotice", SqlDbType.Text, string.IsNullOrEmpty(p.IPTC.CopyrightNotice) ? 1 : p.IPTC.CopyrightNotice.Length);
+            CopyrightNotice.Value = p.IPTC.CopyrightNotice;
+            c.Parameters.Add(CopyrightNotice);
+
+            SqlParameter Headline = new SqlParameter("@Headline", SqlDbType.Text, string.IsNullOrEmpty(p.IPTC.Headline) ? 1 : p.IPTC.Headline.Length);
+            Headline.Value = p.IPTC.Headline;
+            c.Parameters.Add(Headline);
+
+            SqlParameter Caption = new SqlParameter("@Caption", SqlDbType.Text, string.IsNullOrEmpty(p.IPTC.Caption) ? 1 : p.IPTC.Caption.Length);
+            Caption.Value = p.IPTC.Caption;
+            c.Parameters.Add(Caption);
+
+            SqlParameter fk_Cameras_ID = new SqlParameter("@fk_Cameras_ID", SqlDbType.Int, 0);
+            try
+            {
+                fk_Cameras_ID.Value = p.Camera.ID;
             }
             catch (NullReferenceException)
             {
                 fk_Cameras_ID.Value = DBNull.Value;
             }
-            c.Parameters.Add(fk_Photographers_ID);
+            c.Parameters.Add(fk_Cameras_ID);
+
+            //SqlParameter fk_Photographers_ID = new SqlParameter("@fk_Photographers_ID", SqlDbType.Int, 0);
+            //try
+            //{
+            //    fk_Photographers_ID.Value = p.Photographer.ID;
+            //}
+            //catch (NullReferenceException)
+            //{
+            //    fk_Cameras_ID.Value = DBNull.Value;
+            //}
+            //c.Parameters.Add(fk_Photographers_ID);
 
             c.Prepare();
-            c.ExecuteReader();
+            try
+            {
+                c.ExecuteReader();
+            }
+            catch (SqlException e)
+            {
+                Trace.WriteLine(e.Message);
+            }
         }
 
         public void Save(IPhotographerModel photographer)

@@ -2,17 +2,19 @@
 using BIF.SWE2.Interfaces.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Windows.Media.Imaging;
 
 namespace PicDB
 {
-    class PictureListViewModel : IPictureListViewModel
+    class PictureListViewModel : IPictureListViewModel, INotifyPropertyChanged
     {
-        int _CurrentIndex = 1;
-
+        int _CurrentIndex = 0;
         List<IPictureViewModel> _List;
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public PictureListViewModel(IEnumerable<IPictureViewModel> p)
         {
@@ -33,9 +35,11 @@ namespace PicDB
         {
             get
             {
-                if (CurrentIndex <= Count) return List.ElementAt<IPictureViewModel>(CurrentIndex - 1);
+                if (CurrentIndex < Count) return List.ElementAt<IPictureViewModel>(CurrentIndex);
                 else return null;
             }
+
+           
             
         }
 
@@ -69,9 +73,32 @@ namespace PicDB
 
         public int Count => List.Count<IPictureViewModel>();
 
-        public int CurrentIndex => _CurrentIndex;
+        public int CurrentIndex
+        {
+            get
+            {
+                return _CurrentIndex;
+            }
+
+            set
+            {
+                _CurrentIndex = value;
+                OnPropertyChanged("CurrentIndex");
+                OnPropertyChanged("CurrentPicture");
+            }
+        }
+
 
         public string CurrentPictureAsString => CurrentPicture.DisplayName;
 
+
+        protected void OnPropertyChanged(string name)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(name));
+            }
+        }
     }
 }

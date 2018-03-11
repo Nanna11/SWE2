@@ -172,7 +172,7 @@
                                     </Grid.ColumnDefinitions>
                                     <Label Grid.Column="0" Content="CopyrightNotice:" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Top"/>
                                     <StackPanel Grid.Column="1" HorizontalAlignment="Stretch" Orientation="Vertical" Name="CopyrightNoticeAutoComplete" LostFocus="CopyrightNoticeAutoComplete_LostFocus">
-                                        <TextBox HorizontalAlignment="Stretch"  KeyUp="CopyrightNotice_KeyUp" Name="CopyrightNoticeLabel"/>
+                                        <TextBox Text="{Binding CopyrightNotice, UpdateSourceTrigger=Explicit}" HorizontalAlignment="Stretch"  KeyUp="CopyrightNotice_KeyUp" Name="CopyrightNoticeLabel"/>
                                         <Border HorizontalAlignment="Stretch" BorderBrush="Black" BorderThickness="1" Visibility="Collapsed">
                                             <ScrollViewer VerticalScrollBarVisibility="Auto">
                                                 <StackPanel Name="resultStack"></StackPanel>
@@ -195,9 +195,9 @@
                                 </MultiBinding>
                             </Label.Visibility>
                         </Label>
-                        <Image Name="CurrentImage" Stretch="Uniform" StretchDirection="DownOnly" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center" Margin="20,20,20,20" VerticalAlignment="Stretch">
+                        <Image DataContext="{Binding CurrentPicture}" Name="CurrentImage" Stretch="Uniform" StretchDirection="DownOnly" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center" Margin="20,20,20,20" VerticalAlignment="Stretch">
                             <Image.Source>
-                                <BitmapImage UriSource="{Binding CurrentPicture.FilePath, FallbackValue=null}">
+                                <BitmapImage UriSource="{Binding FilePath, FallbackValue=null}">
                                 </BitmapImage>
                             </Image.Source>
                         </Image>
@@ -209,31 +209,36 @@
                             </Label.Visibility>
                         </Label>
                     </Grid>
-                    <ListBox ItemsSource="{Binding List}" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Hidden" BorderThickness="0" Margin="0">
+                    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" DataContext="{Binding List}">
+                        <ListBox SelectedIndex="{Binding CurrentIndex}" ItemsSource="{Binding List}" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Disabled" BorderThickness="0" Margin="0">
                         <ListBox.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <VirtualizingStackPanel IsItemsHost="True" Orientation="Horizontal"/>
+                                    <VirtualizingStackPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsItemsHost="True" Orientation="Horizontal"/>
                             </ItemsPanelTemplate>
                         </ListBox.ItemsPanel>
                         <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Grid Margin="0">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="*" />
-                                        <RowDefinition Height="25" />
-                                    </Grid.RowDefinitions>
-                                    <Image Stretch="Uniform" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center" Margin="5" VerticalAlignment="Stretch">
-                                        <Image.Source>
-                                            <BitmapImage UriSource="{Binding FilePath, FallbackValue=null}">
-                                            </BitmapImage>
-                                        </Image.Source>
-                                    </Image>
-                                    <Label VerticalAlignment="Stretch" HorizontalAlignment="Center" Grid.Row="1" Content="{Binding FileName, FallbackValue='unnamed'}">
+                                <DataTemplate>
+                                    <Grid VerticalAlignment="Stretch">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"></RowDefinition>
+                                            <RowDefinition Height="auto"></RowDefinition>
+                                        </Grid.RowDefinitions>
+                                        <Image Grid.Row="0" Stretch="Uniform" StretchDirection="DownOnly" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                                            <Image.Source>
+                                                <BitmapImage UriSource="{Binding FilePath, FallbackValue=null}">
+                                                </BitmapImage>
+                                            </Image.Source>
+                                        </Image>
+                                    <Label Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Center" Content="{Binding FileName, FallbackValue='unnamed'}">
                                     </Label>
-                                </Grid>
-                            </DataTemplate>
+                                    </Grid>
+                                    
+                                </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
+                    </Grid>
+                    <Button x:Name="Save" Content="Save" HorizontalAlignment="Left" Margin="10,5,0,0" Grid.Row="1" VerticalAlignment="Top" Width="75" Click="Save_Click"/>
+                    <Button Content="Button" HorizontalAlignment="Left" Margin="45,66,0,0" Grid.Row="1" VerticalAlignment="Top" Width="75"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Photographers">

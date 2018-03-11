@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using BIF.SWE2.Interfaces;
 using BIF.SWE2.Interfaces.Models;
+using System.ComponentModel;
 
 namespace PicDB
 {
-    class PictureModel : IPictureModel
+    class PictureModel : IPictureModel, INotifyPropertyChanged
     {
         int _ID;
         string _FileName;
@@ -15,6 +16,7 @@ namespace PicDB
         IEXIFModel _EXIF = new EXIFModel();
         ICameraModel _Camera;
         IPhotographerModel _Photographer;
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public PictureModel(string fn)
         {
@@ -23,22 +25,22 @@ namespace PicDB
 
         public int ID {
             get => _ID;
-            set => _ID = value;
-        }
+            set { _ID = value; }
+            }
 
         public string FileName {
             get => _FileName;
-            set => _FileName = value;
+            set { _FileName = value;}
         }
 
         public IIPTCModel IPTC {
             get => _IPTC;
-            set => _IPTC = value;
-        }
+            set { _IPTC = value; }
+            }
 
         public IEXIFModel EXIF {
             get => _EXIF;
-            set => _EXIF = value;
+            set { _EXIF = value; }
         }
 
         public ICameraModel Camera {
@@ -50,6 +52,15 @@ namespace PicDB
         {
             get => _Photographer;
             set => _Photographer = value;
+        }
+
+        protected void OnPropertyChanged(string name)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(name));
+            }
         }
     }
 }

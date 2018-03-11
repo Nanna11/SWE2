@@ -15,34 +15,27 @@ namespace PicDB
 
         public PhotographerViewModel(IPhotographerModel pm)
         {
-            if(pm != null)
-            {
-                _PhotographerModel = pm;
-            }
-            else
-            {
-                _PhotographerModel = new PhotorapherModel();
-            }
+            _PhotographerModel = pm;
         }
         public int ID => _PhotographerModel.ID;
 
         public string FirstName {
-            get => _PhotographerModel.FirstName;
+            get => _PhotographerModel?.FirstName;
             set => _PhotographerModel.FirstName = value;
         }
 
         public string LastName {
-            get => _PhotographerModel.LastName;
+            get => _PhotographerModel?.LastName;
             set => _PhotographerModel.LastName = value;
         }
 
         public DateTime? BirthDay {
-            get => _PhotographerModel.BirthDay;
+            get => _PhotographerModel?.BirthDay;
             set => _PhotographerModel.BirthDay = value;
         }
 
         public string Notes {
-            get => _PhotographerModel.Notes;
+            get => _PhotographerModel?.Notes;
             set => _PhotographerModel.Notes = value;
         }
 

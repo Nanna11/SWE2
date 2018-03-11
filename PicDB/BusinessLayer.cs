@@ -6,6 +6,7 @@ using System.Text;
 using BIF.SWE2.Interfaces.Models;
 using System.IO;
 using System.Reflection;
+using BIF.SWE2.Interfaces.ViewModels;
 
 namespace PicDB
 {
@@ -42,6 +43,12 @@ namespace PicDB
             }
             string deploypath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             _picturepath = Path.Combine(deploypath, folder);
+        }
+
+        internal void CurrentPictureChanged(IPictureViewModel currentPicture)
+        {
+            PictureViewModel pvm = (PictureViewModel)currentPicture;
+            Save(pvm.PictureModel);
         }
 
         public void DeletePhotographer(int ID)

@@ -15,6 +15,11 @@ namespace PicDB
         DateTime? _BirthDay;
         string _Notes;
 
+        public PhotorapherModel()
+        {
+
+        }
+
         public int ID {
             get => _ID;
             set => _ID = value;

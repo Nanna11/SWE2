@@ -101,5 +101,29 @@ namespace PicDB
             // Add to the panel 
             resultStack.Children.Add(block);
         }
+
+        private void Save_Click(object sender, RoutedEventArgs e)
+        {
+            List<TextBox> TextBoxes = new List<TextBox>();
+            TextBoxes.Add(KeywordsLabel);
+            TextBoxes.Add(ByLineLabel);
+            TextBoxes.Add(HeadlineLabel);
+            TextBoxes.Add(CaptionLabel);
+            TextBoxes.Add(CopyrightNoticeLabel);
+
+            foreach(TextBox tb in TextBoxes)
+            {
+                BindingExpression bn = tb.GetBindingExpression(TextBox.TextProperty);
+                bn.UpdateSource();
+            }
+
+            mw.CurrentPictureChanged();
+            
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            mw.ChangeIndex();
+        }
     }
 }
