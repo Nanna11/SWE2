@@ -26,7 +26,7 @@ namespace Uebungen
 
         public IDataAccessLayer GetAnyDataAccessLayer()
         {
-            return DBConnectionFactory.Instance.GetDal("PicDB", "PicDB", "localhost", "PicDB");
+            return DBConnectionFactory.Instance.CreateDal("PicDB", "PicDB", "localhost", "PicDB");
         }
 
         public IBusinessLayer GetBusinessLayer()

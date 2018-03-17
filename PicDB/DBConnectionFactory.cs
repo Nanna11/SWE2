@@ -9,7 +9,6 @@ namespace PicDB
     class DBConnectionFactory
     {
         private static readonly DBConnectionFactory _dbf;
-        private static IDataAccessLayer _dal = null;
         private static bool _mock = false;
 
         protected DBConnectionFactory()
@@ -38,18 +37,15 @@ namespace PicDB
             }
         }
 
-        public IDataAccessLayer GetDal(string userID, string password, string server, string database)
+        public IDataAccessLayer CreateDal(string userID, string password, string server, string database)
         {
-            if (_dal != null) return _dal;
-            else if(_mock == false)
+            if(_mock == false)
             {
-                _dal = new DataAccessLayer(userID, password, server, database);
-                return _dal;
+                 return new DataAccessLayer(userID, password, server, database);
             }
             else
             {
-                _dal = new MockDataAccessLayer();
-                return _dal;
+                return new MockDataAccessLayer();
             }
         }
     }

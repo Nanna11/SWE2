@@ -12,7 +12,7 @@ namespace PicDB
 {
     class BusinessLayer : IBusinessLayer
     {
-        IDataAccessLayer dal = DBConnectionFactory.Instance.GetDal("PicDB", "PicDB", "localhost", "PicDB");
+        IDataAccessLayer dal = DBConnectionFactory.Instance.CreateDal("PicDB", "PicDB", "localhost", "PicDB");
         static string _picturepath;
 
         public BusinessLayer(string path)

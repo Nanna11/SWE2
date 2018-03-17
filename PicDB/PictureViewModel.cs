@@ -100,14 +100,6 @@ namespace PicDB
             {
                 return _IPTCViewModel;
             }
-
-            set
-            {
-                _IPTCViewModel = value;
-                ((IPTCViewModel)_IPTCViewModel).PropertyChanged += new PropertyChangedEventHandler(SubPropertyChanged);
-                OnPropertyChanged("IPTC");
-                OnPropertyChanged("DisplayName");
-            }
         }
 
         public IEXIFViewModel EXIF

@@ -245,7 +245,7 @@ namespace PicDB
             PictureModel p = (PictureModel)picture;
 
             SqlCommand c = new SqlCommand(null, dbc);
-            c.CommandText = "UPDATE Pictures  SET FileName = @FileName, Make = @Make, FNumber = @FNumber, ExposureTime = @ExposureTime, ISOValue = @ISOValue, Flash = @Flash, ExposureProgram = @ExposureProgram, Keywords = @Keywords, ByLine = @ByLine, CopyrightNotice = @CopyrightNotice, Headline = @Headline, Caption = @Caption, fk_Cameras_ID = @fk_Cameras_ID WHERE ID = @ID";
+            c.CommandText = "UPDATE Pictures  SET FileName = @FileName, Make = @Make, FNumber = @FNumber, ExposureTime = @ExposureTime, ISOValue = @ISOValue, Flash = @Flash, ExposureProgram = @ExposureProgram, Keywords = @Keywords, ByLine = @ByLine, CopyrightNotice = @CopyrightNotice, Headline = @Headline, Caption = @Caption, fk_Cameras_ID = @fk_Cameras_ID, fk_Photographers_ID = @fk_Photographers_ID WHERE ID = @ID";
 
             SqlParameter filename = new SqlParameter("@FileName", SqlDbType.Text, p.FileName.Length);
             filename.Value = p.FileName;
@@ -316,16 +316,16 @@ namespace PicDB
             ID.Value = p.ID;
             c.Parameters.Add(ID);
 
-            //SqlParameter fk_Photographers_ID = new SqlParameter("@fk_Photographers_ID", SqlDbType.Int, 0);
-            //try
-            //{
-            //    fk_Photographers_ID.Value = p.Photographer.ID;
-            //}
-            //catch (NullReferenceException)
-            //{
-            //    fk_Cameras_ID.Value = DBNull.Value;
-            //}
-            //c.Parameters.Add(fk_Photographers_ID);
+            SqlParameter fk_Photographers_ID = new SqlParameter("@fk_Photographers_ID", SqlDbType.Int, 0);
+            try
+            {
+                fk_Photographers_ID.Value = p.Photographer.ID;
+            }
+            catch (NullReferenceException)
+            {
+                fk_Photographers_ID.Value = DBNull.Value;
+            }
+            c.Parameters.Add(fk_Photographers_ID);
 
             c.Prepare();
             try
@@ -343,7 +343,7 @@ namespace PicDB
             PictureModel p = (PictureModel)picture;
 
             SqlCommand c = new SqlCommand(null, dbc);
-            c.CommandText = "INSERT INTO Pictures (FileName, Make, FNumber, ExposureTime, ISOValue, Flash, ExposureProgram, Keywords, ByLine, CopyrightNotice, Headline, Caption, fk_Cameras_ID) VALUES (@FileName, @Make, @FNumber, @ExposureTime, @ISOValue, @Flash, @ExposureProgram, @Keywords, @ByLine, @CopyrightNotice, @Headline, @Caption, @fk_Cameras_ID)";
+            c.CommandText = "INSERT INTO Pictures (FileName, Make, FNumber, ExposureTime, ISOValue, Flash, ExposureProgram, Keywords, ByLine, CopyrightNotice, Headline, Caption, fk_Cameras_ID, fk_Photographers_ID) VALUES (@FileName, @Make, @FNumber, @ExposureTime, @ISOValue, @Flash, @ExposureProgram, @Keywords, @ByLine, @CopyrightNotice, @Headline, @Caption, @fk_Cameras_ID, @fk_Photographers_ID)";
 
             SqlParameter filename = new SqlParameter("@FileName", SqlDbType.Text, p.FileName.Length);
             filename.Value = p.FileName;
@@ -410,16 +410,16 @@ namespace PicDB
             }
             c.Parameters.Add(fk_Cameras_ID);
 
-            //SqlParameter fk_Photographers_ID = new SqlParameter("@fk_Photographers_ID", SqlDbType.Int, 0);
-            //try
-            //{
-            //    fk_Photographers_ID.Value = p.Photographer.ID;
-            //}
-            //catch (NullReferenceException)
-            //{
-            //    fk_Cameras_ID.Value = DBNull.Value;
-            //}
-            //c.Parameters.Add(fk_Photographers_ID);
+            SqlParameter fk_Photographers_ID = new SqlParameter("@fk_Photographers_ID", SqlDbType.Int, 0);
+            try
+            {
+                fk_Photographers_ID.Value = p.Photographer.ID;
+            }
+            catch (NullReferenceException)
+            {
+                fk_Photographers_ID.Value = DBNull.Value;
+            }
+            c.Parameters.Add(fk_Photographers_ID);
 
             c.Prepare();
             try
