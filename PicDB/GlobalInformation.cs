@@ -5,7 +5,7 @@ using System.Text;
 
 namespace PicDB
 {
-    class GlobalInformation
+    public class GlobalInformation
     {
         private static GlobalInformation _instance = null;
         string _folder = null;
@@ -26,6 +26,11 @@ namespace PicDB
             else throw new SingletonInitializedTwiceException();
         }
 
+        public static void Uninitialize()
+        {
+            _instance = null;
+        }
+
         public static GlobalInformation Instance
         {
             get
@@ -40,6 +45,12 @@ namespace PicDB
             get
             {
                 return _folder;
+            }
+
+            set
+            {
+                if (String.IsNullOrEmpty(value)) throw new PathNotSetException("Path was null or empty");
+                _folder = value;
             }
         }
     }

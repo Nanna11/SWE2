@@ -7,7 +7,7 @@ using BIF.SWE2.Interfaces.Models;
 
 namespace PicDB
 {
-    class IPTCModel : IIPTCModel
+    public class IPTCModel : IIPTCModel
     {
         string _Keywords;
         string _ByLine;

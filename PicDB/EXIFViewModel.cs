@@ -5,13 +5,15 @@ using System.Text;
 using BIF.SWE2.Interfaces;
 using BIF.SWE2.Interfaces.ViewModels;
 using BIF.SWE2.Interfaces.Models;
+using System.ComponentModel;
 
 namespace PicDB
 {
-    class EXIFViewModel : IEXIFViewModel
+    public class EXIFViewModel : IEXIFViewModel, INotifyPropertyChanged
     {
         IEXIFModel _EXIFModel;
         ICameraViewModel _CameraViewModel;
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public EXIFViewModel(IEXIFModel em)
         {
@@ -40,7 +42,13 @@ namespace PicDB
 
         public ICameraViewModel Camera {
             get => _CameraViewModel;
-            set => _CameraViewModel = value;
+            set
+            {
+                _CameraViewModel = value;
+                ((CameraViewModel)_CameraViewModel).PropertyChanged += new PropertyChangedEventHandler(SubPropertyChanged);
+                OnPropertyChanged("Camera");
+                OnPropertyChanged("ISORating");
+            }
         }
 
         public ISORatings ISORating
@@ -60,6 +68,28 @@ namespace PicDB
             get
             {
                 return ISORating.ToString();
+            }
+        }
+
+        protected void OnPropertyChanged(string name)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(name));
+            }
+        }
+
+        private void SubPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "ISOLimitGood":
+                    OnPropertyChanged("ISORating");
+                    break;
+                case "ISOLimitAcceptable":
+                    OnPropertyChanged("ISORating");
+                    break;
             }
         }
     }

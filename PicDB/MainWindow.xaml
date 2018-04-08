@@ -21,7 +21,6 @@
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="Margin" Value="20,0" />
         </Style>
-        <BitmapImage x:Key="LandscapeMode" UriSource="./deploy/Media/LandscapeMode.png" />
     </Window.Resources>
     <Grid>
         <TabControl HorizontalAlignment="Left" Height="561" VerticalAlignment="Top" Width="884" BorderThickness="0">
@@ -45,7 +44,12 @@
                                 </MultiBinding>
                             </TextBlock.Visibility>
                         </TextBlock>
-                        <TextBox Padding="15,0,0,0" x:Name="SearchText" Background="Transparent" BorderBrush="{StaticResource brushWatermarkBorder}" VerticalContentAlignment="Center" KeyUp="SearchTextKeyUp" KeyDown="SearchTextKeyDown" VerticalAlignment="Stretch" FontSize="14"/>
+                        <TextBox DataContext="{Binding Search}" Padding="15,0,0,0" x:Name="SearchText" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" BorderBrush="{StaticResource brushWatermarkBorder}" VerticalContentAlignment="Center" VerticalAlignment="Stretch" FontSize="14">
+                            <TextBox.InputBindings>
+                                <KeyBinding Command="{Binding OnEnterOrReturn}" Key="Return"></KeyBinding>
+                                <KeyBinding Command="{Binding OnEnterOrReturn}" Key="Enter"></KeyBinding>
+                            </TextBox.InputBindings>
+                        </TextBox>
                     </Grid>
                     <TabControl Grid.Column="1" HorizontalAlignment="Stretch"  Grid.Row="1" VerticalAlignment="Stretch" DataContext="{Binding CurrentPicture}">
                         <TabControl.IsEnabled>

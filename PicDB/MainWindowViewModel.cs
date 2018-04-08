@@ -8,9 +8,9 @@ using System.Text;
 
 namespace PicDB
 {
-    class MainWindowViewModel : IMainWindowViewModel, INotifyPropertyChanged
+    public class MainWindowViewModel : IMainWindowViewModel, INotifyPropertyChanged
     {
-        ISearchViewModel _Search = new SearchViewModel();
+        SearchViewModel _Search;
         IPictureListViewModel _List;
         BusinessLayer bl = new BusinessLayer();
 
@@ -39,8 +39,6 @@ namespace PicDB
             }
         }
 
-
-
         public IPictureListViewModel List
         {
             get
@@ -62,7 +60,9 @@ namespace PicDB
         {
             bl.Sync();
             List = new PictureListViewModel(bl.GetPictures(null, null, null, null));
-            
+            _Search = new SearchViewModel();
+            _Search.SearchActivated += SearchPictures;
+
         }
 
         internal void CurrentPictureChanged()
@@ -79,9 +79,9 @@ namespace PicDB
             }
         }
 
-        public void SearchPictures(string s)
+        public void SearchPictures(object sender, SearchEventArgs e)
         {
-            List = new PictureListViewModel(bl.GetPictures(s, null, null, null));
+            List = new PictureListViewModel(bl.GetPictures(e.Searchtext, null, null, null));
         }
 
     }

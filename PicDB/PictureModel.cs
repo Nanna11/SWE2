@@ -8,7 +8,7 @@ using System.ComponentModel;
 
 namespace PicDB
 {
-    class PictureModel : IPictureModel, INotifyPropertyChanged
+    public class PictureModel : IPictureModel, INotifyPropertyChanged
     {
         int _ID;
         string _FileName;
@@ -45,7 +45,11 @@ namespace PicDB
 
         public ICameraModel Camera {
             get => _Camera;
-            set => _Camera = value;
+            set
+            {
+                _Camera = value;
+                OnPropertyChanged("Camera");
+            }
         }
 
         public IPhotographerModel Photographer

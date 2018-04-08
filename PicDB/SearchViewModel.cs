@@ -4,14 +4,25 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Windows.Input;
 
 namespace PicDB
 {
-    class SearchViewModel : ISearchViewModel, INotifyPropertyChanged
+    public class SearchViewModel : ISearchViewModel//, INotifyPropertyChanged
     {
         string _SearchText;
-        PictureListViewModel _results;
-        public event PropertyChangedEventHandler PropertyChanged;
+        public delegate void SearchActivatedEventHander(object sender, SearchEventArgs e);
+        public event SearchActivatedEventHander SearchActivated;
+        public ICommand OnEnterOrReturn
+        {
+            get
+            {
+                return new ActionCommand(() =>
+                {
+                    OnSearchActivted();
+                });
+            }
+        }
 
         public string SearchText {
             get
@@ -19,7 +30,10 @@ namespace PicDB
                 if (string.IsNullOrEmpty(_SearchText)) return null;
                 else return _SearchText;
             }
-            set => _SearchText = value;
+            set
+            {
+                _SearchText = value;
+            }
         }
 
         public bool IsActive
@@ -31,35 +45,17 @@ namespace PicDB
             }
         }
 
-        public PictureListViewModel Results
-        {
-            get
-            {
-                return _results;
-            }
-
-            set
-            {
-                _results = value;
-                OnPropertyChanged("Results");
-            }
-        }
-
         public int ResultCount
         {
             get
             {
-                return _results.Count;
+                throw new NotImplementedException();
             }
         }
 
-        protected void OnPropertyChanged(string name)
+        protected void OnSearchActivted()
         {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(name));
-            }
+            if (SearchActivated != null) SearchActivated(this, new SearchEventArgs(_SearchText));
         }
     }
 }

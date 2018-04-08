@@ -7,7 +7,7 @@ using BIF.SWE2.Interfaces.Models;
 
 namespace PicDB
 {
-    class CameraModel : ICameraModel
+    public class CameraModel : ICameraModel
     {
         int _ID;
         string _Producer;

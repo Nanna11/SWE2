@@ -17,6 +17,24 @@ public class ElementWithIdDoesNotExistException : Exception
     }
 }
 
+public class DBConnectionNotAvailableException : Exception
+{
+    public DBConnectionNotAvailableException()
+    {
+    }
+
+    public DBConnectionNotAvailableException(string message)
+        : base(message)
+    {
+    }
+
+    public DBConnectionNotAvailableException(string message, Exception inner)
+        : base(message, inner)
+    {
+    }
+}
+
+
 public class PathNotSetException : Exception
 {
     public PathNotSetException()

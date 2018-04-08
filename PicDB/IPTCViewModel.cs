@@ -9,7 +9,7 @@ using System.ComponentModel;
 
 namespace PicDB
 {
-    class IPTCViewModel : IIPTCViewModel, INotifyPropertyChanged
+    public class IPTCViewModel : IIPTCViewModel, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         IIPTCModel _IPTCModel;

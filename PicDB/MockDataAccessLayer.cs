@@ -9,7 +9,7 @@ using System.Data;
 
 namespace PicDB
 {
-    class MockDataAccessLayer : IDataAccessLayer
+    public class MockDataAccessLayer : IOwnDataAccessLayer
     {
         List<IPictureModel> picl = new List<IPictureModel>();
         List<IPhotographerModel> phol = new List<IPhotographerModel>();
@@ -17,13 +17,15 @@ namespace PicDB
 
         public MockDataAccessLayer()
         {
-            IPictureModel p = new PictureModel("ASonne.jpg");
+            IPictureModel p = new PictureModel("Blume.jpg");
+            p.ID = 1234;
             Save(p);
-            p = new PictureModel("Blume.jpg");
-            Save(p);
-            Save(new PhotorapherModel());
-            Save(new PhotorapherModel());
-            Save(new CameraModel());
+            IPhotographerModel ph = new PhotographerModel();
+            ph.ID = 1234;
+            Save(ph);
+            ICameraModel c = new CameraModel();
+            c.ID = 1234;
+            Save(c);
         }
 
         public void DeletePhotographer(int ID)
@@ -57,7 +59,7 @@ namespace PicDB
         public void DeleteCamera(int ID)
         {
             List<ICameraModel> del = new List<ICameraModel>();
-            foreach (ICameraModel p in picl)
+            foreach (ICameraModel p in caml)
             {
                 if (p.ID == ID) del.Add(p);
             }
@@ -70,7 +72,11 @@ namespace PicDB
 
         public ICameraModel GetCamera(int ID)
         {
-            return new CameraModel();
+            foreach(ICameraModel c in caml)
+            {
+                if (c.ID == ID) return c;
+            }
+            throw new Exception();
         }
 
         public IEnumerable<ICameraModel> GetCameras()
@@ -80,7 +86,11 @@ namespace PicDB
 
         public IPhotographerModel GetPhotographer(int ID)
         {
-            return new PhotorapherModel();
+            foreach (IPhotographerModel c in phol)
+            {
+                if (c.ID == ID) return c;
+            }
+            throw new Exception();
         }
 
         public IEnumerable<IPhotographerModel> GetPhotographers()
@@ -90,7 +100,11 @@ namespace PicDB
 
         public IPictureModel GetPicture(int ID)
         {
-            return new PictureModel("test.jpg");
+            foreach (IPictureModel c in picl)
+            {
+                if (c.ID == ID) return c;
+            }
+            throw new Exception();
         }
 
         public IEnumerable<IPictureModel> GetPictures(string namePart, IPhotographerModel photographerParts, BIF.SWE2.Interfaces.Models.IIPTCModel iptcParts, IEXIFModel exifParts)

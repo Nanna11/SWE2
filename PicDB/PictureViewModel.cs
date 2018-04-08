@@ -12,24 +12,27 @@ using System.ComponentModel;
 
 namespace PicDB
 {
-    class PictureViewModel : IPictureViewModel, INotifyPropertyChanged
+    public class PictureViewModel : IPictureViewModel, INotifyPropertyChanged
     {
         PictureModel _PictureModel;
         IIPTCViewModel _IPTCViewModel;
         IEXIFViewModel _EXIFViewModel;
-        ICameraViewModel _CameraViewModel;
         IPhotographerViewModel _PhotographerViewModel;
         public event PropertyChangedEventHandler PropertyChanged;
 
         public PictureViewModel(IPictureModel pm)
         {
             _PictureModel = (PictureModel)pm;
+            _PictureModel.PropertyChanged += new PropertyChangedEventHandler(SubPropertyChanged);
             _IPTCViewModel = new IPTCViewModel(_PictureModel.IPTC);
             _EXIFViewModel = new EXIFViewModel(_PictureModel.EXIF);
-            _CameraViewModel = new CameraViewModel(_PictureModel.Camera);
             ((IPTCViewModel)_IPTCViewModel).PropertyChanged += new PropertyChangedEventHandler(SubPropertyChanged);
             PictureModel p = (PictureModel)_PictureModel;
-            if (_PictureModel.Photographer != null) _PhotographerViewModel = new PhotographerViewModel(_PictureModel.Photographer);
+            if (_PictureModel.Photographer != null)
+            {
+                _PhotographerViewModel = new PhotographerViewModel(_PictureModel.Photographer);
+                ((PhotographerViewModel)_PhotographerViewModel).PropertyChanged += new PropertyChangedEventHandler(SubPropertyChanged);
+            }
         }
         public int ID => _PictureModel.ID;
 
@@ -60,8 +63,9 @@ namespace PicDB
                 }
                 catch (SingletonNotInitializedException)
                 {
-                    return null;
+                    throw new PathNotSetException();
                 }
+                if (String.IsNullOrEmpty(folder)) throw new PathNotSetException("Path was empty");
                 string deploypath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
                 return Path.Combine(deploypath, folder, FileName);
             }
@@ -112,7 +116,10 @@ namespace PicDB
             set
             {
                 _EXIFViewModel = value;
+                if(_EXIFViewModel.Camera != null) _PictureModel.Camera = ((CameraViewModel)_EXIFViewModel.Camera).CameraModel;
+                ((EXIFViewModel)_EXIFViewModel).PropertyChanged += new PropertyChangedEventHandler(SubPropertyChanged);
                 OnPropertyChanged("EXIF");
+                OnPropertyChanged("Camera");
             }
         }
 
@@ -121,17 +128,24 @@ namespace PicDB
             set
             {
                 _PhotographerViewModel = value;
+                ((PhotographerViewModel)_PhotographerViewModel).PropertyChanged += new PropertyChangedEventHandler(SubPropertyChanged);
                 OnPropertyChanged("Photographer");
+                OnPropertyChanged("DisplayName");
             }
         }
 
 
         public ICameraViewModel Camera
         {
-            get { return _CameraViewModel; }
+            get { return EXIF?.Camera; }
             set
             {
-                _CameraViewModel = value;
+                if (EXIF != null) EXIF.Camera = value;
+                else
+                {
+                    EXIF = new EXIFViewModel(new EXIFModel());
+                    EXIF.Camera = value;
+                }
                 OnPropertyChanged("Camera");
             }
         }
@@ -155,7 +169,26 @@ namespace PicDB
 
         private void SubPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if(sender == _IPTCViewModel && (e.PropertyName == "ByLine" || e.PropertyName == "Headline")) OnPropertyChanged("DisplayName");
+            switch (e.PropertyName)
+            {
+                case "ByLine":
+                    OnPropertyChanged("DisplayName");
+                    break;
+                case "Headline":
+                    OnPropertyChanged("DisplayName");
+                    break;
+                case "FirstName":
+                    OnPropertyChanged("DisplayName");
+                    break;
+                case "LastName":
+                    OnPropertyChanged("DisplayName");
+                    break;
+                case "Camera":
+                    OnPropertyChanged("Camera");
+                    if (sender == EXIF) _PictureModel.Camera = ((CameraViewModel)Camera).CameraModel;
+                    else if (sender == _PictureModel) Camera = new CameraViewModel(_PictureModel.Camera);
+                    break;
+            }
         }
     }
 }

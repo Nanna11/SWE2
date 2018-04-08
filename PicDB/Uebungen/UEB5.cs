@@ -37,7 +37,7 @@ namespace Uebungen
 
         public IPhotographerModel GetEmptyPhotographerModel()
         {
-            return new PhotorapherModel();
+            return new PhotographerModel();
         }
 
         public IPhotographerViewModel GetPhotographerViewModel(IPhotographerModel mdl)

@@ -40,7 +40,7 @@ namespace Uebungen
 
         public IPhotographerModel GetEmptyPhotographerModel()
         {
-            return new PhotorapherModel();
+            return new PhotographerModel();
         }
     }
 }

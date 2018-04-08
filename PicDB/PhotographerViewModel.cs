@@ -5,13 +5,15 @@ using System.Text;
 using BIF.SWE2.Interfaces;
 using BIF.SWE2.Interfaces.ViewModels;
 using BIF.SWE2.Interfaces.Models;
+using System.ComponentModel;
 
 namespace PicDB
 {
-    class PhotographerViewModel : IPhotographerViewModel
+    public class PhotographerViewModel : IPhotographerViewModel, INotifyPropertyChanged
     {
         IPhotographerModel _PhotographerModel;
         int _NumberOfPictures;
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public PhotographerViewModel(IPhotographerModel pm)
         {
@@ -20,13 +22,21 @@ namespace PicDB
         public int ID => _PhotographerModel.ID;
 
         public string FirstName {
-            get => _PhotographerModel?.FirstName;
-            set => _PhotographerModel.FirstName = value;
+            get => _PhotographerModel.FirstName;
+            set
+            {
+                _PhotographerModel.FirstName = value;
+                OnPropertyChanged("FirstName");
+            }
         }
 
         public string LastName {
             get => _PhotographerModel?.LastName;
-            set => _PhotographerModel.LastName = value;
+            set
+            {
+                _PhotographerModel.LastName = value;
+                OnPropertyChanged("LastName");
+            }
         }
 
         public DateTime? BirthDay {
@@ -88,7 +98,6 @@ namespace PicDB
             }
         }
         
-
         public bool IsValidBirthDay
         {
             get
@@ -99,6 +108,15 @@ namespace PicDB
                     else return false;
                 }
                 else return true;
+            }
+        }
+
+        protected void OnPropertyChanged(string name)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(name));
             }
         }
     }

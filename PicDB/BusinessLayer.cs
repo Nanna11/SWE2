@@ -10,24 +10,16 @@ using BIF.SWE2.Interfaces.ViewModels;
 
 namespace PicDB
 {
-    class BusinessLayer : IBusinessLayer
+    public class BusinessLayer : IBusinessLayer
     {
-        IDataAccessLayer dal = DBConnectionFactory.Instance.CreateDal("PicDB", "PicDB", "localhost", "PicDB");
+        IOwnDataAccessLayer dal = DBConnectionFactory.Instance.CreateDal("PicDB", "PicDB", "localhost", "PicDB");
         static string _picturepath;
 
         public BusinessLayer(string path)
         {
-            string folder;
-            try
-            {
-                folder = GlobalInformation.Instance.Folder;
-            }
-            catch (SingletonNotInitializedException)
-            {
-                throw new PathNotSetException();
-            }
+            if (String.IsNullOrEmpty(path)) throw new PathNotSetException("Path was empty");
             string deploypath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            _picturepath = Path.Combine(deploypath, folder);
+            _picturepath = Path.Combine(deploypath, path);
         }
 
         public BusinessLayer()
@@ -41,6 +33,7 @@ namespace PicDB
             {
                 throw new PathNotSetException();
             }
+            if (String.IsNullOrEmpty(folder)) throw new PathNotSetException("Path was empty");
             string deploypath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             _picturepath = Path.Combine(deploypath, folder);
         }
@@ -59,6 +52,11 @@ namespace PicDB
         public void DeletePicture(int ID)
         {
             dal.DeletePicture(ID);
+        }
+
+        public void DeleteCamera(int ID)
+        {
+            dal.DeleteCamera(ID);
         }
 
         public IEXIFModel ExtractEXIF(string filename)
@@ -118,6 +116,11 @@ namespace PicDB
         public void Save(IPhotographerModel photographer)
         {
             dal.Save(photographer);
+        }
+
+        public void Save(ICameraModel camera)
+        {
+            dal.Save(camera);
         }
 
         public void Sync()

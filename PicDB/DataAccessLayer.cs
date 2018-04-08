@@ -11,15 +11,16 @@ using System.Diagnostics;
 
 namespace PicDB
 {
-    class DataAccessLayer : IDataAccessLayer
+    public class DataAccessLayer : IOwnDataAccessLayer
     {
         SqlConnection dbc;
 
         public DataAccessLayer(string userID, string password, string server, string database)
         {
-            string connectionstring = "user id="+ userID + ";password=" + password + ";server=" + server + ";Trusted_Connection=yes;database="+ database + ";connection timeout=30; MultipleActiveResultSets=true";
+            string connectionstring = "user id="+ userID + ";password=" + password + ";server=" + server + ";Trusted_Connection=yes;database="+ database + ";connection timeout=5; MultipleActiveResultSets=true";
             dbc = new SqlConnection(connectionstring);
             dbc.Open();
+            if (dbc.State != ConnectionState.Open) throw new DBConnectionNotAvailableException();
         }
 
         public void DeletePhotographer(int ID)
@@ -102,7 +103,7 @@ namespace PicDB
 
         public IPhotographerModel GetPhotographer(int ID)
         {
-            IPhotographerModel pm = new PhotorapherModel();
+            IPhotographerModel pm = new PhotographerModel();
 
             SqlCommand c = new SqlCommand(null, dbc);
             c.CommandText = "SELECT ID, FirstName, LastName, Birthdate, Notes FROM Photographers WHERE ID = @id";
@@ -137,7 +138,7 @@ namespace PicDB
             SqlDataReader dr = c.ExecuteReader();
             while (dr.Read())
             {
-                IPhotographerModel pm = new PhotorapherModel();
+                IPhotographerModel pm = new PhotographerModel();
                 pm.ID = dr.GetInt32(1);
                 pm.FirstName = dr.GetString(2);
                 pm.LastName = dr.GetString(3);
@@ -433,6 +434,16 @@ namespace PicDB
         }
 
         public void Save(IPhotographerModel photographer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Save(ICameraModel camera)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DeleteCamera(int ID)
         {
             throw new NotImplementedException();
         }

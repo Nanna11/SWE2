@@ -5,13 +5,15 @@ using System.Text;
 using BIF.SWE2.Interfaces;
 using BIF.SWE2.Interfaces.ViewModels;
 using BIF.SWE2.Interfaces.Models;
+using System.ComponentModel;
 
 namespace PicDB
 {
-    class CameraViewModel : ICameraViewModel
+    public class CameraViewModel : ICameraViewModel, INotifyPropertyChanged
     {
         ICameraModel _Camera;
         int _NumberOfPictures;
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public CameraViewModel(ICameraModel c)
         {
@@ -121,12 +123,20 @@ namespace PicDB
 
         public decimal ISOLimitGood {
             get => _Camera.ISOLimitGood;
-            set => _Camera.ISOLimitGood = value;
+            set
+            {
+                _Camera.ISOLimitGood = value;
+                OnPropertyChanged("ISOLimitGood");
+            }
         }
 
         public decimal ISOLimitAcceptable {
             get => _Camera.ISOLimitAcceptable;
-            set => _Camera.ISOLimitAcceptable = value;
+            set
+            {
+                _Camera.ISOLimitAcceptable = value;
+                OnPropertyChanged("ISOLimitAcceptable");
+            }
         }
 
         public ISORatings TranslateISORating(decimal iso)
@@ -136,6 +146,23 @@ namespace PicDB
             else if (iso <= ISOLimitAcceptable) return ISORatings.Acceptable;
             else if (iso > ISOLimitAcceptable) return ISORatings.Noisey;
             else throw new ArgumentOutOfRangeException();
+        }
+
+        public ICameraModel CameraModel
+        {
+            get
+            {
+                return _Camera;
+            }
+        }
+
+        protected void OnPropertyChanged(string name)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(name));
+            }
         }
     }
 }

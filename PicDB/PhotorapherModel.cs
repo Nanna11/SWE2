@@ -7,7 +7,7 @@ using BIF.SWE2.Interfaces.Models;
 
 namespace PicDB
 {
-    class PhotorapherModel : IPhotographerModel
+    public class PhotographerModel : IPhotographerModel
     {
         int _ID;
         string _Firstname;
@@ -15,7 +15,7 @@ namespace PicDB
         DateTime? _BirthDay;
         string _Notes;
 
-        public PhotorapherModel()
+        public PhotographerModel()
         {
 
         }

@@ -10,7 +10,7 @@ using System.Windows.Media.Imaging;
 
 namespace PicDB
 {
-    class PictureListViewModel : IPictureListViewModel, INotifyPropertyChanged
+    public class PictureListViewModel : IPictureListViewModel, INotifyPropertyChanged
     {
         int _CurrentIndex = 0;
         List<IPictureViewModel> _List;
@@ -38,9 +38,6 @@ namespace PicDB
                 if (CurrentIndex < Count) return List.ElementAt<IPictureViewModel>(CurrentIndex);
                 else return null;
             }
-
-           
-            
         }
 
         public IEnumerable<IPictureViewModel> List => _List;
@@ -50,7 +47,7 @@ namespace PicDB
             get
             {
                 List<IPictureViewModel> PrevPic = new List<IPictureViewModel>();
-                for(int i = 0; i < CurrentIndex - 1; i++)
+                for(int i = 0; i < CurrentIndex; i++)
                 {
                     PrevPic.Add(List.ElementAt<IPictureViewModel>(i));
                 }
@@ -63,7 +60,7 @@ namespace PicDB
             get
             {
                 List<IPictureViewModel> NextPic = new List<IPictureViewModel>();
-                for (int i = CurrentIndex - 1; i < Count; i++)
+                for (int i = CurrentIndex + 1; i < Count; i++)
                 {
                     NextPic.Add(List.ElementAt<IPictureViewModel>(i));
                 }
@@ -84,13 +81,20 @@ namespace PicDB
             {
                 _CurrentIndex = value;
                 if (_CurrentIndex < 0) _CurrentIndex = 0;
+                if (_CurrentIndex >=  _List.Count) _CurrentIndex = 0;
                 OnPropertyChanged("CurrentIndex");
                 OnPropertyChanged("CurrentPicture");
             }
         }
 
 
-        public string CurrentPictureAsString => CurrentPicture.DisplayName;
+        public string CurrentPictureAsString
+        {
+            get
+            {
+                return (CurrentIndex + 1).ToString() + " out of " + Count.ToString();
+            }
+        }
 
 
         protected void OnPropertyChanged(string name)

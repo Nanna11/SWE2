@@ -6,7 +6,7 @@ using System.Text;
 
 namespace PicDB
 {
-    class PhotographerListViewModel : IPhotographerListViewModel
+    public class PhotographerListViewModel : IPhotographerListViewModel
     {
         List<IPhotographerViewModel> _List = new List<IPhotographerViewModel>();
         IPhotographerViewModel _CurrentPhotographer;

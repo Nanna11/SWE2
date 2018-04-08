@@ -6,7 +6,7 @@ using System.Text;
 
 namespace PicDB
 {
-    class DBConnectionFactory
+    public class DBConnectionFactory
     {
         private static readonly DBConnectionFactory _dbf;
         private static bool _mock = false;
@@ -37,7 +37,7 @@ namespace PicDB
             }
         }
 
-        public IDataAccessLayer CreateDal(string userID, string password, string server, string database)
+        public IOwnDataAccessLayer CreateDal(string userID, string password, string server, string database)
         {
             if(_mock == false)
             {

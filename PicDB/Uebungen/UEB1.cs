@@ -66,12 +66,12 @@ namespace Uebungen
 
         public BIF.SWE2.Interfaces.Models.IPhotographerModel GetEmptyPhotographerModel()
         {
-            return new PhotorapherModel();
+            return new PhotographerModel();
         }
 
         public BIF.SWE2.Interfaces.ViewModels.IPhotographerViewModel GetEmptyPhotographerViewModel()
         {
-            return new PhotographerViewModel(new PhotorapherModel());
+            return new PhotographerViewModel(new PhotographerModel());
         }
 
         public BIF.SWE2.Interfaces.ViewModels.IPictureListViewModel GetEmptyPictureListViewModel()

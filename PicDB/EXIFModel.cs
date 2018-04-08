@@ -7,7 +7,7 @@ using BIF.SWE2.Interfaces.Models;
 
 namespace PicDB
 {
-    class EXIFModel : IEXIFModel
+    public class EXIFModel : IEXIFModel
     {
         string _Make;
         decimal _FNumber;
