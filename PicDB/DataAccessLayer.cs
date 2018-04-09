@@ -614,17 +614,208 @@ namespace PicDB
 
         public void Save(IPhotographerModel photographer)
         {
-            throw new NotImplementedException();
+            if (_Photographers.ContainsKey(photographer.ID)) UpdatePhotographer(photographer);
+            else InsertPhotograper(photographer);
+        }
+
+        private void InsertPhotograper(IPhotographerModel photographer)
+        {
+            PhotographerModel p = (PhotographerModel)photographer;
+
+            SqlCommand c = new SqlCommand(null, dbc);
+            c.CommandText = "INSERT INTO Photographers (FirstName, LastName, Birthdate, Notes) OUTPUT INSERTED.ID VALUES(@FirstName, @LastName, @Birthdate, @Notes)";
+
+            SqlParameter FirstName = new SqlParameter("@FirstName", SqlDbType.VarChar, string.IsNullOrEmpty(photographer.FirstName) ? 1 : photographer.FirstName.Length);
+            if (photographer.FirstName != null) FirstName.Value = photographer.FirstName;
+            else FirstName.Value = DBNull.Value;
+            c.Parameters.Add(FirstName);
+
+            SqlParameter LastName = new SqlParameter("@LastName", SqlDbType.VarChar, photographer.LastName.Length);
+            LastName.Value = photographer.LastName;
+            c.Parameters.Add(LastName);
+
+            SqlParameter Birthdate = new SqlParameter("@Birthdate", SqlDbType.Date, 0);
+            if (photographer.BirthDay != null) Birthdate.Value = photographer.BirthDay;
+            else Birthdate.Value = DBNull.Value;
+            c.Parameters.Add(Birthdate);
+
+            SqlParameter Notes = new SqlParameter("@Notes", SqlDbType.Text, string.IsNullOrEmpty(photographer.Notes) ? 1 : photographer.Notes.Length);
+            if (photographer.Notes != null) Notes.Value = photographer.Notes;
+            else Notes.Value = DBNull.Value;
+            c.Parameters.Add(Notes);
+
+            c.Prepare();
+            try
+            {
+                Int32 ID =  (Int32)c.ExecuteScalar();
+                photographer.ID = ID;
+                _Photographers.Add(photographer.ID, (PhotographerModel)photographer);
+            }
+            catch (SqlException e)
+            {
+                Trace.WriteLine(e.Message);
+            }
+        }
+
+        private void UpdatePhotographer(IPhotographerModel photographer)
+        {
+            PhotographerModel p = (PhotographerModel)photographer;
+
+            SqlCommand c = new SqlCommand(null, dbc);
+            c.CommandText = "UPDATE Photographers SET FirstName = @FirstName, LastName = @LastName, Birthdate = @Birthdate, Notes = @Notes WHERE ID = @ID";
+
+            SqlParameter ID = new SqlParameter("@ID", SqlDbType.Int, 0);
+            ID.Value = photographer.ID;
+            c.Parameters.Add(ID);
+
+            SqlParameter FirstName = new SqlParameter("@FirstName", SqlDbType.VarChar, string.IsNullOrEmpty(photographer.FirstName) ? 1 : photographer.FirstName.Length);
+            FirstName.Value = photographer.FirstName;
+            c.Parameters.Add(FirstName);
+
+            SqlParameter LastName = new SqlParameter("@LastName", SqlDbType.VarChar, photographer.LastName.Length);
+            LastName.Value = photographer.LastName;
+            c.Parameters.Add(LastName);
+
+            SqlParameter Bithdate = new SqlParameter("@Birthdate", SqlDbType.Date, 0);
+            Bithdate.Value = (SqlDateTime)photographer.BirthDay;
+            c.Parameters.Add(Bithdate);
+
+            SqlParameter Notes = new SqlParameter("@Notes", SqlDbType.Text, string.IsNullOrEmpty(photographer.Notes) ? 1 : photographer.Notes.Length);
+            Notes.Value = photographer.Notes;
+            c.Parameters.Add(Notes);
+
+            c.Prepare();
+            try
+            {
+                c.ExecuteReader();
+                _Photographers[photographer.ID] = (PhotographerModel)photographer;
+            }
+            catch (SqlException e)
+            {
+                Trace.WriteLine(e.Message);
+            }
         }
 
         public void Save(ICameraModel camera)
         {
-            throw new NotImplementedException();
+            if (_Cameras.ContainsKey(camera.ID)) UpdateCamera(camera);
+            else InsertCamera(camera);
+        }
+
+        private void InsertCamera(ICameraModel camera)
+        {
+            SqlCommand c = new SqlCommand(null, dbc);
+            c.CommandText = "INSERT INTO Cameras (Producer, Make, BoughtOn, Notes, ISOLimitGood, ISOLimitAcceptable) OUTPUT INSERTED.ID VALUES(@Producer, @Make, @BoughtOn, @Notes, @ISOLimitGood, @ISOLimitAcceptable)";
+
+            SqlParameter Producer = new SqlParameter("@Producer", SqlDbType.Text, string.IsNullOrEmpty(camera.Producer) ? 1 : camera.Producer.Length);
+            if (camera.Producer != null) Producer.Value = camera.Producer;
+            else Producer.Value = DBNull.Value;
+            c.Parameters.Add(Producer);
+
+            SqlParameter Make = new SqlParameter("@Make", SqlDbType.Text, string.IsNullOrEmpty(camera.Producer) ? 1 : camera.Producer.Length);
+            if (camera.Make != null) Make.Value = camera.Make;
+            else Make.Value = DBNull.Value;
+            c.Parameters.Add(Make);
+
+            SqlParameter BoughtOn = new SqlParameter("@BoughtOn", SqlDbType.DateTime, 0);
+            if (camera.BoughtOn != null) BoughtOn.Value = camera.BoughtOn;
+            else BoughtOn.Value = DBNull.Value;
+            c.Parameters.Add(BoughtOn);
+
+            SqlParameter Notes = new SqlParameter("@Notes", SqlDbType.Text, string.IsNullOrEmpty(camera.Notes) ? 1 : camera.Notes.Length);
+            if (camera.Notes != null) Notes.Value = camera.Notes;
+            else Notes.Value = DBNull.Value;
+            c.Parameters.Add(Notes);
+
+            SqlParameter ISOLimitGood = new SqlParameter("@ISOLimitGood", SqlDbType.Decimal, 0);
+            ISOLimitGood.Precision = 18;
+            ISOLimitGood.Scale = 2;
+            ISOLimitGood.Value = (decimal)camera.ISOLimitGood;
+            c.Parameters.Add(ISOLimitGood);
+
+            SqlParameter ISOLimitAcceptable = new SqlParameter("@ISOLimitAcceptable", SqlDbType.Decimal, 0);
+            ISOLimitAcceptable.Precision = 18;
+            ISOLimitAcceptable.Scale = 2;
+            ISOLimitAcceptable.Value = (decimal)camera.ISOLimitAcceptable;
+            c.Parameters.Add(ISOLimitAcceptable);
+
+            c.Prepare();
+            try
+            {
+                Int32 ID = (Int32)c.ExecuteScalar();
+                camera.ID = ID;
+                _Cameras.Add(camera.ID, (CameraModel)camera);
+            }
+            catch (SqlException e)
+            {
+                Trace.WriteLine(e.Message);
+            }
+        }
+
+        private void UpdateCamera(ICameraModel camera)
+        {
+            SqlCommand c = new SqlCommand(null, dbc);
+            c.CommandText = "UPDATE Cameras SWT Producer = @Producer, Make = @Make, BoughtOn = @BoughtOn, Notes = @Notes, ISOLimitGood = @ISOLimitGood, ISOLimitAcceptable = @ISOLimitAcceptable) WHERE ID = @ID";
+
+            SqlParameter ID = new SqlParameter("@ID", SqlDbType.Int, 0);
+            ID.Value = camera.ID;
+            c.Parameters.Add(ID);
+
+            SqlParameter Producer = new SqlParameter("@Producer", SqlDbType.Text, string.IsNullOrEmpty(camera.Producer) ? 1 : camera.Producer.Length);
+            if (camera.Producer != null) Producer.Value = camera.Producer;
+            else Producer.Value = DBNull.Value;
+            c.Parameters.Add(Producer);
+
+            SqlParameter Make = new SqlParameter("@Make", SqlDbType.Text, string.IsNullOrEmpty(camera.Producer) ? 1 : camera.Producer.Length);
+            if (camera.Make != null) Make.Value = camera.Make;
+            else Make.Value = DBNull.Value;
+            c.Parameters.Add(Make);
+
+            SqlParameter BoughtOn = new SqlParameter("@BoughtOn", SqlDbType.DateTime, 0);
+            if (camera.BoughtOn != null) BoughtOn.Value = camera.BoughtOn;
+            else BoughtOn.Value = DBNull.Value;
+            c.Parameters.Add(BoughtOn);
+
+            SqlParameter Notes = new SqlParameter("@Notes", SqlDbType.Text, string.IsNullOrEmpty(camera.Notes) ? 1 : camera.Notes.Length);
+            if (camera.Notes != null) Notes.Value = camera.Notes;
+            else Notes.Value = DBNull.Value;
+            c.Parameters.Add(Notes);
+
+            SqlParameter ISOLimitGood = new SqlParameter("@ISOLimitGood", SqlDbType.Decimal, 0);
+            ISOLimitGood.Precision = 18;
+            ISOLimitGood.Scale = 2;
+            ISOLimitGood.Value = (decimal)camera.ISOLimitGood;
+            c.Parameters.Add(ISOLimitGood);
+
+            SqlParameter ISOLimitAcceptable = new SqlParameter("@ISOLimitAcceptable", SqlDbType.Decimal, 0);
+            ISOLimitAcceptable.Precision = 18;
+            ISOLimitAcceptable.Scale = 2;
+            ISOLimitAcceptable.Value = (decimal)camera.ISOLimitAcceptable;
+            c.Parameters.Add(ISOLimitAcceptable);
+
+            c.Prepare();
+            try
+            {
+                c.ExecuteReader();
+                _Cameras[camera.ID] = (CameraModel)camera;
+            }
+            catch (SqlException e)
+            {
+                Trace.WriteLine(e.Message);
+            }
         }
 
         public void DeleteCamera(int ID)
         {
-            throw new NotImplementedException();
+            SqlCommand c = new SqlCommand(null, dbc);
+            c.CommandText = "UPDATE PICTURES SET fk_Cameras_ID = NULL WHERE fk_Cameras_ID = @id; DELETE FROM CAMERAS WHERE ID = @id";
+            SqlParameter id = new SqlParameter("@id", SqlDbType.Int, 0);
+            id.Value = ID;
+            c.Parameters.Add(id);
+            c.Prepare();
+            SqlDataReader dr = c.ExecuteReader();
+            dr.Close();
+            _Cameras.Remove(ID);
         }
     }
 }
