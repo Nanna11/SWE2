@@ -61,7 +61,7 @@
                                     <Grid HorizontalAlignment="Stretch">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition></ColumnDefinition>
-                                            <ColumnDefinition Width="2*"></ColumnDefinition>
+                                            <ColumnDefinition Width="1.5*"></ColumnDefinition>
                                         </Grid.ColumnDefinitions>
                                         <Label Grid.Column="0" Content="Filename:" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Top"/>
                                         <Label Grid.Column="1" Content="{Binding FileName, FallbackValue=''}" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Top"/>
@@ -69,12 +69,42 @@
                                     <Grid HorizontalAlignment="Stretch">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition></ColumnDefinition>
-                                            <ColumnDefinition Width="2*"></ColumnDefinition>
+                                            <ColumnDefinition Width="1.5*"></ColumnDefinition>
                                         </Grid.ColumnDefinitions>
                                         <Label Grid.Column="0" Content="Filepath:" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Top"/>
                                         <TextBlock TextWrapping="WrapWithOverflow" Grid.Column="1" Text="{Binding FilePath, FallbackValue=''}" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Top">
 
                                         </TextBlock>
+                                    </Grid>
+                                    <Grid HorizontalAlignment="Stretch">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition></ColumnDefinition>
+                                            <ColumnDefinition Width="1.5*"></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Grid.Column="0" Content="Photographer:" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Top"/>
+                                        <ComboBox Name="Photographer" DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext}" Grid.Column="1" ItemsSource="{Binding PhotographerList.List}" SelectedItem="{Binding CurrentPicture.Photographer, UpdateSourceTrigger=Explicit}" HorizontalAlignment="Stretch" VerticalAlignment="Top" RenderTransformOrigin="0.014,3">
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Label VerticalAlignment="Stretch" HorizontalAlignment="Center" Content="{Binding FullName, FallbackValue='unnamed'}">
+                                                    </Label>
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
+                                    </Grid>
+                                    <Grid HorizontalAlignment="Stretch">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition></ColumnDefinition>
+                                            <ColumnDefinition Width="1.5*"></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Grid.Column="0" Content="Camera:" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Top"/>
+                                        <ComboBox Name="Camera" DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext}" Grid.Column="1" ItemsSource="{Binding CameraList.List}" SelectedItem="{Binding CurrentPicture.Camera, UpdateSourceTrigger=Explicit}" HorizontalAlignment="Stretch" VerticalAlignment="Top" RenderTransformOrigin="0.014,3">
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Label VerticalAlignment="Stretch" HorizontalAlignment="Center" Content="{Binding DisplayName, FallbackValue='unnamed'}">
+                                                    </Label>
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
                                     </Grid>
                                 </StackPanel>
                             </Grid>
@@ -113,6 +143,14 @@
                                         </Grid.ColumnDefinitions>
                                         <Label Grid.Column="0" Content="ISOValue:" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Top"/>
                                         <Label Name="ISOValueLabel" Grid.Column="1" Content="{Binding ISOValue, FallbackValue=''}" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Top"/>
+                                    </Grid>
+                                    <Grid HorizontalAlignment="Stretch" Visibility="{Binding ElementName=ISORatingLabel, Path=Content, Converter={StaticResource NullToCollapsedConverter}}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition></ColumnDefinition>
+                                            <ColumnDefinition></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Grid.Column="0" Content="ISORating:" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Top"/>
+                                        <Label Name="ISORatingLabel" Grid.Column="1" Content="{Binding ISORating, FallbackValue=''}" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Top"/>
                                     </Grid>
                                     <Grid HorizontalAlignment="Stretch" Visibility="{Binding ElementName=FlashLabel, Path=IsChecked, Converter={StaticResource NullToCollapsedConverter}}">
                                         <Grid.ColumnDefinitions>

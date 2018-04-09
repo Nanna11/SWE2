@@ -14,6 +14,9 @@ namespace PicDB
     public class DataAccessLayer : IOwnDataAccessLayer
     {
         SqlConnection dbc;
+        Dictionary<int, PhotographerModel> _Photographers = new Dictionary<int, PhotographerModel>();
+        Dictionary<int,CameraModel> _Cameras = new Dictionary<int, CameraModel>();
+        Dictionary<int, PictureModel> _Pictures = new Dictionary<int, PictureModel>();
 
         public DataAccessLayer(string userID, string password, string server, string database)
         {
@@ -25,14 +28,16 @@ namespace PicDB
 
         public void DeletePhotographer(int ID)
         {
+
             SqlCommand c = new SqlCommand(null, dbc);
-            c.CommandText = "DELETE FROM PHOTOGRAPHERS WHERE ID = @id";
+            c.CommandText = "UPDATE PICTURES SET fk_Photographers_ID = NULL WHERE fk_Photographers_ID = @id; DELETE FROM PHOTOGRAPHERS WHERE ID = @id";
             SqlParameter id = new SqlParameter("@id", SqlDbType.Int, 0);
             id.Value = ID;
             c.Parameters.Add(id);
             c.Prepare();
             SqlDataReader dr = c.ExecuteReader();
             dr.Close();
+            _Photographers.Remove(ID);
         }
 
         public void DeletePicture(int ID)
@@ -45,162 +50,326 @@ namespace PicDB
             c.Prepare();
             SqlDataReader dr = c.ExecuteReader();
             dr.Close();
+            _Pictures.Remove(ID);
         }
 
         public ICameraModel GetCamera(int ID)
         {
-            ICameraModel cm = new CameraModel();
-
-            SqlCommand c = new SqlCommand(null, dbc);
-            c.CommandText = "SELECT ID, Producer, Make, BoughtOn, Notes, ISOLimitGood, ISOLimitAcceptable FROM Cameras WHERE ID = @id";
-            SqlParameter id = new SqlParameter("@id", SqlDbType.Int, 0);
-            id.Value = ID;
-            c.Parameters.Add(id);
-            c.Prepare();
-            SqlDataReader dr = c.ExecuteReader();
-            if (dr.Read())
+            if (_Cameras.ContainsKey(ID))
             {
-                cm.ID = dr.GetInt32(1);
-                cm.Producer = dr.GetString(2);
-                cm.Make = dr.GetString(3);
-                cm.BoughtOn = dr.GetDateTime(4);
-                cm.Notes = dr.GetString(5);
-                cm.ISOLimitGood = dr.GetDecimal(6);
-                cm.ISOLimitAcceptable = dr.GetDecimal(7);
-                dr.Close();
-                return cm;
+                return _Cameras[ID];
             }
             else
             {
-                dr.Close();
-                throw new ElementWithIdDoesNotExistException();
+                ICameraModel cm = new CameraModel();
+
+                SqlCommand c = new SqlCommand(null, dbc);
+                c.CommandText = "SELECT ID, Producer, Make, BoughtOn, Notes, ISOLimitGood, ISOLimitAcceptable FROM Cameras WHERE ID = @id";
+                SqlParameter id = new SqlParameter("@id", SqlDbType.Int, 0);
+                id.Value = ID;
+                c.Parameters.Add(id);
+                c.Prepare();
+                SqlDataReader dr = c.ExecuteReader();
+                if (dr.Read())
+                {
+                    cm.ID = dr.GetInt32(0);
+                    try
+                    {
+                        cm.Producer = dr.GetString(1);
+                    }
+                    catch (SqlNullValueException) { }
+                    try
+                    {
+                        cm.Make = dr.GetString(2);
+                    }
+                    catch (SqlNullValueException) { }
+                    try
+                    {
+                        cm.BoughtOn = dr.GetDateTime(3);
+                    }
+                    catch (SqlNullValueException) { }
+                    try
+                    {
+                        cm.Notes = dr.GetString(4);
+                    }
+                    catch (SqlNullValueException) { }
+                    try
+                    {
+                        cm.ISOLimitGood = dr.GetDecimal(5);
+                    }
+                    catch (SqlNullValueException) { }
+                    try
+                    {
+                        cm.ISOLimitAcceptable = dr.GetDecimal(6);
+                    }
+                    catch (SqlNullValueException) { }
+                    dr.Close();
+                    _Cameras.Add(cm.ID, (CameraModel)cm);
+                    return cm;
+                }
+                else
+                {
+                    dr.Close();
+                    throw new ElementWithIdDoesNotExistException();
+                }
             }
             
         }
 
         public IEnumerable<ICameraModel> GetCameras()
         {
-            List<ICameraModel> cml = new List<ICameraModel>();
-
+            Dictionary<int, CameraModel> newCameras = new Dictionary<int, CameraModel>();
             SqlCommand c = new SqlCommand(null, dbc);
             c.CommandText = "SELECT ID, Producer, Make, BoughtOn, Notes, ISOLimitGood, ISOLimitAcceptable FROM Cameras";
             SqlDataReader dr = c.ExecuteReader();
             while (dr.Read())
             {
-                ICameraModel cm = new CameraModel();
-                cm.ID = dr.GetInt32(3);
-                cm.Producer = dr.GetString(2);
-                cm.Make = dr.GetString(3);
-                cm.BoughtOn = dr.GetDateTime(4);
-                cm.Notes = dr.GetString(5);
-                cm.ISOLimitGood = dr.GetDecimal(6);
-                cm.ISOLimitAcceptable = dr.GetDecimal(7);
-                cml.Add(cm);
+                int ID = dr.GetInt32(0);
+                if (_Cameras.ContainsKey(ID)) newCameras.Add(ID, _Cameras[ID]);
+                else newCameras.Add(ID, new CameraModel());
+                ICameraModel cm = newCameras[ID];
+                cm.ID = ID;
+                try
+                {
+                    cm.Producer = dr.GetString(1);
+                }
+                catch (SqlNullValueException) { }
+                try
+                {
+                    cm.Make = dr.GetString(2);
+                }
+                catch (SqlNullValueException) { }
+                try
+                {
+                    cm.BoughtOn = dr.GetDateTime(3);
+                }
+                catch (SqlNullValueException) { }
+                try
+                {
+                    cm.Notes = dr.GetString(4);
+                }
+                catch (SqlNullValueException) { }
+                try
+                {
+                    cm.ISOLimitGood = dr.GetDecimal(5);
+                }
+                catch (SqlNullValueException) { }
+                try
+                {
+                    cm.ISOLimitAcceptable = dr.GetDecimal(6);
+                }
+                catch (SqlNullValueException) { }
             }
             dr.Close();
-            return cml;
+            _Cameras = newCameras;
+            return _Cameras.Values.ToList();
         }
 
         public IPhotographerModel GetPhotographer(int ID)
         {
-            IPhotographerModel pm = new PhotographerModel();
-
-            SqlCommand c = new SqlCommand(null, dbc);
-            c.CommandText = "SELECT ID, FirstName, LastName, Birthdate, Notes FROM Photographers WHERE ID = @id";
-            SqlParameter id = new SqlParameter("@id", SqlDbType.Int, 0);
-            id.Value = ID;
-            c.Parameters.Add(id);
-            c.Prepare();
-            SqlDataReader dr = c.ExecuteReader();
-            if (dr.Read())
+            if (_Photographers.ContainsKey(ID))
             {
-                pm.ID = dr.GetInt32(1);
-                pm.FirstName = dr.GetString(2);
-                pm.LastName = dr.GetString(3);
-                pm.BirthDay = dr.GetDateTime(4);
-                pm.Notes = dr.GetString(5);
-                dr.Close();
-                return pm;
+                return _Photographers[ID];
             }
             else
             {
-                dr.Close();
-                throw new ElementWithIdDoesNotExistException();
+                IPhotographerModel pm = new PhotographerModel();
+
+                SqlCommand c = new SqlCommand(null, dbc);
+                c.CommandText = "SELECT ID, FirstName, LastName, Birthdate, Notes FROM Photographers WHERE ID = @id";
+                SqlParameter id = new SqlParameter("@id", SqlDbType.Int, 0);
+                id.Value = ID;
+                c.Parameters.Add(id);
+                c.Prepare();
+                SqlDataReader dr = c.ExecuteReader();
+                if (dr.Read())
+                {
+                    pm.ID = dr.GetInt32(0);
+                    try
+                    {
+                        pm.FirstName = dr.GetString(1);
+                    }
+                    catch (SqlNullValueException) { }
+                    pm.LastName = dr.GetString(2);
+                    try
+                    {
+                        pm.BirthDay = dr.GetDateTime(3);
+                    }
+                    catch (SqlNullValueException) { }
+                    try
+                    {
+                        pm.Notes = dr.GetString(4);
+                    }
+                    catch (SqlNullValueException) { }
+                    dr.Close();
+                    _Photographers.Add(pm.ID, (PhotographerModel)pm);
+                    return pm;
+                }
+                else
+                {
+                    dr.Close();
+                    throw new ElementWithIdDoesNotExistException();
+                }
             }
         }
 
         public IEnumerable<IPhotographerModel> GetPhotographers()
         {
-            List<IPhotographerModel> pml = new List<IPhotographerModel>();
+            Dictionary<int, PhotographerModel> newPhotographers = new Dictionary<int, PhotographerModel>();
 
             SqlCommand c = new SqlCommand(null, dbc);
             c.CommandText = "SELECT ID, FirstName, LastName, Birthdate, Notes FROM Photographers";
             SqlDataReader dr = c.ExecuteReader();
             while (dr.Read())
             {
-                IPhotographerModel pm = new PhotographerModel();
-                pm.ID = dr.GetInt32(1);
-                pm.FirstName = dr.GetString(2);
-                pm.LastName = dr.GetString(3);
-                pm.BirthDay = dr.GetDateTime(4);
-                pm.Notes = dr.GetString(5);
-                pml.Add(pm);
+                int ID = dr.GetInt32(0);
+                if (_Photographers.ContainsKey(ID)) newPhotographers.Add(ID, _Photographers[ID]);
+                else newPhotographers.Add(ID, new PhotographerModel());
+                IPhotographerModel pm = newPhotographers[ID];
+                pm.ID = ID;
+                try{
+                    pm.FirstName = dr.GetString(1);
+                }
+                catch (SqlNullValueException) { }
+                pm.LastName = dr.GetString(2);
+                try
+                {
+                    pm.BirthDay = dr.GetDateTime(3);
+                }
+                catch (SqlNullValueException) { }
+                try
+                {
+                    pm.Notes = dr.GetString(4);
+                }
+                catch (SqlNullValueException) { }
             }
             dr.Close();
-            return pml;
+            _Photographers = newPhotographers;
+            return _Photographers.Values.ToList();
         }
 
         public IPictureModel GetPicture(int ID)
         {
-            PictureModel pm = new PictureModel("test.jpg");
-
-            SqlCommand c = new SqlCommand(null, dbc);
-            c.CommandText = "SELECT ID, FileName, Make, FNumber, ExposureTime, ISOValue, Flash, ExposureProgram, Keywords, ByLine, CopyrightNotice, Headline, Caption, fk_Cameras_ID, fk_Photographers_ID FROM Pictures WHERE ID = @id";
-            SqlParameter id = new SqlParameter("@id", SqlDbType.Int, 0);
-            id.Value = ID;
-            c.Parameters.Add(id);
-            c.Prepare();
-            SqlDataReader dr = c.ExecuteReader();
-            if (dr.Read())
+            if (_Pictures.ContainsKey(ID))
             {
-                pm.ID = dr.GetInt32(1);
-                pm.FileName = dr.GetString(2);
-                pm.EXIF.Make = dr.GetString(3);
-                pm.EXIF.FNumber = dr.GetDecimal(4);
-                pm.EXIF.ExposureTime = dr.GetDecimal(5);
-                pm.EXIF.ISOValue = dr.GetDecimal(6);
-                pm.EXIF.Flash = dr.GetBoolean(7);
-                pm.EXIF.ExposureProgram = (ExposurePrograms)dr.GetInt32(8);
-                pm.IPTC.Keywords = dr.GetString(9);
-                pm.IPTC.ByLine = dr.GetString(10);
-                pm.IPTC.CopyrightNotice = dr.GetString(11);
-                pm.IPTC.Headline = dr.GetString(12);
-                pm.IPTC.Caption = dr.GetString(13);
-                pm.Camera = GetCamera(dr.GetInt32(14));
-                pm.Photographer = GetPhotographer(dr.GetInt32(15));
-                dr.Close();
-                return pm;
+                return _Pictures[ID];
             }
             else
             {
-                dr.Close();
-                throw new ElementWithIdDoesNotExistException();
+                PictureModel pm = new PictureModel("test.jpg");
+
+                SqlCommand c = new SqlCommand(null, dbc);
+                c.CommandText = "SELECT ID, FileName, Make, FNumber, ExposureTime, ISOValue, Flash, ExposureProgram, Keywords, ByLine, CopyrightNotice, Headline, Caption, fk_Cameras_ID, fk_Photographers_ID FROM Pictures WHERE ID = @id";
+                SqlParameter id = new SqlParameter("@id", SqlDbType.Int, 0);
+                id.Value = ID;
+                c.Parameters.Add(id);
+                c.Prepare();
+                SqlDataReader dr = c.ExecuteReader();
+                if (dr.Read())
+                {
+                    pm.ID = dr.GetInt32(1);
+                    pm.FileName = dr.GetString(2);
+                    pm.EXIF.Make = dr.GetString(3);
+                    pm.EXIF.FNumber = dr.GetDecimal(4);
+                    pm.EXIF.ExposureTime = dr.GetDecimal(5);
+                    pm.EXIF.ISOValue = dr.GetDecimal(6);
+                    pm.EXIF.Flash = dr.GetBoolean(7);
+                    pm.EXIF.ExposureProgram = (ExposurePrograms)dr.GetInt32(8);
+                    pm.IPTC.Keywords = dr.GetString(9);
+                    pm.IPTC.ByLine = dr.GetString(10);
+                    pm.IPTC.CopyrightNotice = dr.GetString(11);
+                    pm.IPTC.Headline = dr.GetString(12);
+                    pm.IPTC.Caption = dr.GetString(13);
+                    pm.Camera = GetCamera(dr.GetInt32(14));
+                    pm.Photographer = GetPhotographer(dr.GetInt32(15));
+                    dr.Close();
+                    _Pictures.Add(pm.ID, pm);
+                    return pm;
+                }
+                else
+                {
+                    dr.Close();
+                    throw new ElementWithIdDoesNotExistException();
+                }
             }
         }
 
         public IEnumerable<IPictureModel> GetPictures(string namePart, IPhotographerModel photographerParts, BIF.SWE2.Interfaces.Models.IIPTCModel iptcParts, IEXIFModel exifParts)
         {
-            List<IPictureModel> pml = new List<IPictureModel>();
+            if (String.IsNullOrEmpty(namePart)) return UnfilteredPictures();
+            else return FilteredPictures(namePart);
+        }
+
+        IEnumerable<IPictureModel> UnfilteredPictures()
+        {
+            Dictionary<int, PictureModel> newPictures = new Dictionary<int, PictureModel>();
 
             SqlCommand c = new SqlCommand(null, dbc);
             c.CommandText = "SELECT ID, FileName, Make, FNumber, ExposureTime, ISOValue, Flash, ExposureProgram, Keywords, ByLine, CopyrightNotice, Headline, Caption, fk_Cameras_ID, fk_Photographers_ID FROM Pictures";
             SqlDataReader dr = c.ExecuteReader();
             while (dr.Read())
             {
-                PictureModel pm = new PictureModel("test.jpg");
-                pm.ID = dr.GetInt32(0);
-                pm.FileName = dr.GetString(1);
-                if(namePart != null) if (!pm.FileName.ToLower().Contains(namePart.ToLower())) continue;
+                int ID = dr.GetInt32(0);
+                string Filename = dr.GetString(1);
+                if (_Pictures.ContainsKey(ID)) newPictures.Add(ID, _Pictures[ID]);
+                else newPictures.Add(ID, new PictureModel(Filename));
+                PictureModel pm = newPictures[ID];
+                pm.ID = ID;
+                pm.FileName = Filename;
+                pm.EXIF.Make = dr.GetString(2);
+                pm.EXIF.FNumber = dr.GetDecimal(3);
+                pm.EXIF.ExposureTime = dr.GetDecimal(4);
+                pm.EXIF.ISOValue = dr.GetDecimal(5);
+                pm.EXIF.Flash = dr.GetBoolean(6);
+                pm.EXIF.ExposureProgram = (ExposurePrograms) dr.GetInt32(7);
+                pm.IPTC.Keywords = dr.GetString(8);
+                pm.IPTC.ByLine = dr.GetString(9);
+                pm.IPTC.CopyrightNotice = dr.GetString(10);
+                pm.IPTC.Headline = dr.GetString(11);
+                pm.IPTC.Caption = dr.GetString(12);
+                try
+                {
+                    pm.Camera = GetCamera(dr.GetInt32(13));
+                }
+                catch (SqlNullValueException)
+                {
+                    pm.Camera = null;
+                }
+
+                try
+                {
+                    pm.Photographer = GetPhotographer(dr.GetInt32(14));
+                }
+                catch (SqlNullValueException)
+                {
+                    pm.Photographer = null;
+                }
+            }
+            dr.Close();
+            _Pictures = newPictures;
+            return _Pictures.Values.ToList();
+        }
+
+        IEnumerable<IPictureModel> FilteredPictures(string namePart)
+        {
+            Dictionary<int, PictureModel> filteredPictures = new Dictionary<int, PictureModel>();
+
+            SqlCommand c = new SqlCommand(null, dbc);
+            c.CommandText = "SELECT ID, FileName, Make, FNumber, ExposureTime, ISOValue, Flash, ExposureProgram, Keywords, ByLine, CopyrightNotice, Headline, Caption, fk_Cameras_ID, fk_Photographers_ID FROM Pictures WHERE CHARINDEX(LOWER(@namePart), LOWER(cast(FileName as varchar(max)))) > 0";
+            SqlParameter filename = new SqlParameter("@namePart", SqlDbType.VarChar, namePart.Length);
+            filename.Value = namePart;
+            c.Parameters.Add(filename);
+            SqlDataReader dr = c.ExecuteReader();
+            while (dr.Read())
+            {
+                int ID = dr.GetInt32(0);
+                string Filename = dr.GetString(1);
+                if (_Pictures.ContainsKey(ID)) filteredPictures.Add(ID, _Pictures[ID]);
+                else filteredPictures.Add(ID, new PictureModel(Filename));
+                PictureModel pm = filteredPictures[ID];
+                pm.ID = ID;
+                pm.FileName = Filename;
+                if (namePart != null) if (!pm.FileName.ToLower().Contains(namePart.ToLower())) continue;
                 pm.EXIF.Make = dr.GetString(2);
                 pm.EXIF.FNumber = dr.GetDecimal(3);
                 pm.EXIF.ExposureTime = dr.GetDecimal(4);
@@ -229,20 +398,20 @@ namespace PicDB
                 {
                     pm.Photographer = null;
                 }
-                pml.Add(pm);
             }
             dr.Close();
-            return pml;
+            return filteredPictures.Values.ToList();
         }
 
         public void Save(IPictureModel picture)
         {
-            if (picture.ID > 0) UpdatePicture(picture);
+            if (_Pictures.ContainsKey(picture.ID)) UpdatePicture(picture);
             else InsertPicture(picture);            
         }
 
         private void UpdatePicture(IPictureModel picture)
         {
+            _Pictures[picture.ID] = (PictureModel)picture;
             PictureModel p = (PictureModel)picture;
 
             SqlCommand c = new SqlCommand(null, dbc);
@@ -344,7 +513,7 @@ namespace PicDB
             PictureModel p = (PictureModel)picture;
 
             SqlCommand c = new SqlCommand(null, dbc);
-            c.CommandText = "INSERT INTO Pictures (FileName, Make, FNumber, ExposureTime, ISOValue, Flash, ExposureProgram, Keywords, ByLine, CopyrightNotice, Headline, Caption, fk_Cameras_ID, fk_Photographers_ID) VALUES (@FileName, @Make, @FNumber, @ExposureTime, @ISOValue, @Flash, @ExposureProgram, @Keywords, @ByLine, @CopyrightNotice, @Headline, @Caption, @fk_Cameras_ID, @fk_Photographers_ID)";
+            c.CommandText = "INSERT INTO Pictures (FileName, Make, FNumber, ExposureTime, ISOValue, Flash, ExposureProgram, Keywords, ByLine, CopyrightNotice, Headline, Caption, fk_Cameras_ID, fk_Photographers_ID) VALUES (@FileName, @Make, @FNumber, @ExposureTime, @ISOValue, @Flash, @ExposureProgram, @Keywords, @ByLine, @CopyrightNotice, @Headline, @Caption, @fk_Cameras_ID, @fk_Photographers_ID);";
 
             SqlParameter filename = new SqlParameter("@FileName", SqlDbType.Text, p.FileName.Length);
             filename.Value = p.FileName;
@@ -425,7 +594,17 @@ namespace PicDB
             c.Prepare();
             try
             {
-                c.ExecuteReader();
+                c.ExecuteNonQuery();
+                c.CommandText = "SELECT ID FROM Pictures WHERE FileName LIKE @File;";
+                SqlParameter fileName = new SqlParameter("@File", SqlDbType.Text, p.FileName.Length);
+                fileName.Value = p.FileName;
+                c.Parameters.Add(fileName);
+                SqlDataReader dr = c.ExecuteReader();
+                if (dr.Read())
+                {
+                    picture.ID = dr.GetInt32(0);
+                    _Pictures.Add(picture.ID, (PictureModel)picture);
+                }
             }
             catch (SqlException e)
             {

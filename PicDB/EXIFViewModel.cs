@@ -13,11 +13,13 @@ namespace PicDB
     {
         IEXIFModel _EXIFModel;
         ICameraViewModel _CameraViewModel;
+        IPictureViewModel _PictureViewModel;
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public EXIFViewModel(IEXIFModel em)
+        public EXIFViewModel(IEXIFModel em, IPictureViewModel pvm)
         {
             _EXIFModel = em;
+            _PictureViewModel = pvm;
         }
 
         public string Make => _EXIFModel.Make;
@@ -41,11 +43,10 @@ namespace PicDB
         }
 
         public ICameraViewModel Camera {
-            get => _CameraViewModel;
+            get => _PictureViewModel.Camera;
             set
             {
-                _CameraViewModel = value;
-                ((CameraViewModel)_CameraViewModel).PropertyChanged += new PropertyChangedEventHandler(SubPropertyChanged);
+                ((PictureViewModel)_PictureViewModel).Camera = value;
                 OnPropertyChanged("Camera");
                 OnPropertyChanged("ISORating");
             }
@@ -55,9 +56,9 @@ namespace PicDB
         {
             get
             {
-                if (_CameraViewModel != null)
+                if (Camera != null)
                 {
-                    return _CameraViewModel.TranslateISORating(ISOValue);
+                    return Camera.TranslateISORating(ISOValue);
                 }
                 else return ISORatings.NotDefined;
             }

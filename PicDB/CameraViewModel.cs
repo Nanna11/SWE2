@@ -156,6 +156,14 @@ namespace PicDB
             }
         }
 
+        public string DisplayName
+        {
+            get
+            {
+                return Producer + " " + Make;
+            }
+        }
+
         protected void OnPropertyChanged(string name)
         {
             PropertyChangedEventHandler handler = PropertyChanged;

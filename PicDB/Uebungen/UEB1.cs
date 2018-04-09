@@ -41,7 +41,7 @@ namespace Uebungen
 
         public BIF.SWE2.Interfaces.ViewModels.IEXIFViewModel GetEmptyEXIFViewModel()
         {
-            return new EXIFViewModel(new EXIFModel());
+            return new EXIFViewModel(new EXIFModel(), new PictureViewModel(new PictureModel("test")));
         }
 
         public BIF.SWE2.Interfaces.Models.IIPTCModel GetEmptyIPTCModel()
@@ -61,7 +61,7 @@ namespace Uebungen
 
         public BIF.SWE2.Interfaces.ViewModels.IPhotographerListViewModel GetEmptyPhotographerListViewModel()
         {
-            return new PhotographerListViewModel();
+            return new PhotographerListViewModel(new List<IPhotographerViewModel>());
         }
 
         public BIF.SWE2.Interfaces.Models.IPhotographerModel GetEmptyPhotographerModel()
@@ -114,7 +114,7 @@ namespace Uebungen
 
         public ICameraListViewModel GetEmptyCameraListViewModel()
         {
-            return new CameraListViewModel();
+            return new CameraListViewModel(new List<ICameraModel>());
         }
 
         public ICameraViewModel GetEmptyCameraViewModel()

@@ -18,20 +18,31 @@ namespace PicDB
         IIPTCViewModel _IPTCViewModel;
         IEXIFViewModel _EXIFViewModel;
         IPhotographerViewModel _PhotographerViewModel;
+        ICameraViewModel _CameraViewModel;
         public event PropertyChangedEventHandler PropertyChanged;
 
         public PictureViewModel(IPictureModel pm)
         {
             _PictureModel = (PictureModel)pm;
             _PictureModel.PropertyChanged += new PropertyChangedEventHandler(SubPropertyChanged);
-            _IPTCViewModel = new IPTCViewModel(_PictureModel.IPTC);
-            _EXIFViewModel = new EXIFViewModel(_PictureModel.EXIF);
-            ((IPTCViewModel)_IPTCViewModel).PropertyChanged += new PropertyChangedEventHandler(SubPropertyChanged);
-            PictureModel p = (PictureModel)_PictureModel;
+            if(_PictureModel.IPTC != null)
+            {
+                _IPTCViewModel = new IPTCViewModel(_PictureModel.IPTC);
+                ((IPTCViewModel)_IPTCViewModel).PropertyChanged += new PropertyChangedEventHandler(SubPropertyChanged);
+            }
+            if(_PictureModel.EXIF != null)
+            {
+                _EXIFViewModel = new EXIFViewModel(_PictureModel.EXIF, this);
+                ((EXIFViewModel)_EXIFViewModel).PropertyChanged += new PropertyChangedEventHandler(SubPropertyChanged);
+            }
             if (_PictureModel.Photographer != null)
             {
                 _PhotographerViewModel = new PhotographerViewModel(_PictureModel.Photographer);
                 ((PhotographerViewModel)_PhotographerViewModel).PropertyChanged += new PropertyChangedEventHandler(SubPropertyChanged);
+            }
+            if (_PictureModel.Camera != null)
+            {
+                _CameraViewModel = new CameraViewModel(_PictureModel.Camera);
             }
         }
         public int ID => _PictureModel.ID;
@@ -128,6 +139,7 @@ namespace PicDB
             set
             {
                 _PhotographerViewModel = value;
+                _PictureModel.Photographer = ((PhotographerViewModel)_PhotographerViewModel).PhotographerModel;
                 ((PhotographerViewModel)_PhotographerViewModel).PropertyChanged += new PropertyChangedEventHandler(SubPropertyChanged);
                 OnPropertyChanged("Photographer");
                 OnPropertyChanged("DisplayName");
@@ -137,16 +149,11 @@ namespace PicDB
 
         public ICameraViewModel Camera
         {
-            get { return EXIF?.Camera; }
+            get { return _CameraViewModel; }
             set
             {
-                if (EXIF != null) EXIF.Camera = value;
-                else
-                {
-                    EXIF = new EXIFViewModel(new EXIFModel());
-                    EXIF.Camera = value;
-                }
-                OnPropertyChanged("Camera");
+                _PictureModel.Camera = ((CameraViewModel)value).CameraModel;
+                _CameraViewModel = value;
             }
         }
 
@@ -184,9 +191,12 @@ namespace PicDB
                     OnPropertyChanged("DisplayName");
                     break;
                 case "Camera":
-                    OnPropertyChanged("Camera");
-                    if (sender == EXIF) _PictureModel.Camera = ((CameraViewModel)Camera).CameraModel;
-                    else if (sender == _PictureModel) Camera = new CameraViewModel(_PictureModel.Camera);
+                    if (sender == _PictureModel)
+                    {
+                        if (_PictureModel.Camera != null) _CameraViewModel = new CameraViewModel(_PictureModel.Camera);
+                        else _CameraViewModel = null;
+                        OnPropertyChanged("Camera");
+                    }
                     break;
             }
         }

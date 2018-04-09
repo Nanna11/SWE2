@@ -27,6 +27,7 @@ namespace PicDB
             {
                 _PhotographerModel.FirstName = value;
                 OnPropertyChanged("FirstName");
+                OnPropertyChanged("FullName");
             }
         }
 
@@ -36,6 +37,7 @@ namespace PicDB
             {
                 _PhotographerModel.LastName = value;
                 OnPropertyChanged("LastName");
+                OnPropertyChanged("FullName");
             }
         }
 
@@ -82,6 +84,14 @@ namespace PicDB
             }
         }
 
+        public string FullName
+        {
+            get
+            {
+                return FirstName + " " + LastName;
+            }
+        }
+
         public bool IsValidLastName {
             get
             {
@@ -117,6 +127,14 @@ namespace PicDB
             if (handler != null)
             {
                 handler(this, new PropertyChangedEventArgs(name));
+            }
+        }
+
+        public PhotographerModel PhotographerModel
+        {
+            get
+            {
+                return (PhotographerModel)_PhotographerModel;
             }
         }
     }

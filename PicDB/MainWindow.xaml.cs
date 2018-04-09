@@ -59,6 +59,7 @@ namespace PicDB
                     addItem(obj, border);
                 }
             }
+            if(resultStack.Children.Count == 0) border.Visibility = System.Windows.Visibility.Collapsed;
         }
 
         private void CopyrightNoticeAutoComplete_LostFocus(object sender, RoutedEventArgs e)
@@ -111,11 +112,20 @@ namespace PicDB
             TextBoxes.Add(CaptionLabel);
             TextBoxes.Add(CopyrightNoticeLabel);
 
-            foreach(TextBox tb in TextBoxes)
+            BindingExpression bn;
+            foreach (TextBox tb in TextBoxes)
             {
-                BindingExpression bn = tb.GetBindingExpression(TextBox.TextProperty);
+                bn = tb.GetBindingExpression(TextBox.TextProperty);
                 bn.UpdateSource();
             }
+
+            ComboBox box = Photographer;
+            bn = box.GetBindingExpression(ComboBox.SelectedItemProperty);
+            bn.UpdateSource();
+
+            box = Camera;
+            bn = box.GetBindingExpression(ComboBox.SelectedItemProperty);
+            bn.UpdateSource();
 
             mw.CurrentPictureChanged();
         }

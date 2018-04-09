@@ -105,5 +105,27 @@ namespace PicDB
                 handler(this, new PropertyChangedEventArgs(name));
             }
         }
+
+        public void SetPhotographers(PhotographerListViewModel p)
+        {
+            foreach(IPictureViewModel picture in List)
+            {
+                if(picture.Photographer != null)
+                {
+                    ((PictureViewModel)picture).Photographer = p.GetPhotographer(picture.Photographer.ID);
+                }
+            }
+        }
+
+        public void SetCameras(CameraListViewModel c)
+        {
+            foreach (IPictureViewModel picture in List)
+            {
+                if (picture.Camera != null)
+                {
+                    ((PictureViewModel)picture).Camera = c.GetCamera(picture.Camera.ID);
+                }
+            }
+        }
     }
 }

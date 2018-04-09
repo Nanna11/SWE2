@@ -42,7 +42,7 @@ namespace Uebungen
 
         public IEXIFViewModel GetEXIFViewModel(IEXIFModel mdl)
         {
-            return new EXIFViewModel(mdl);
+            return new EXIFViewModel(mdl, new PictureViewModel(new PictureModel("test")));
         }
 
         public IIPTCModel GetEmptyIPTCModel()

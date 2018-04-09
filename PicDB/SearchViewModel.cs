@@ -17,6 +17,7 @@ namespace PicDB
         {
             get
             {
+                //cache
                 return new ActionCommand(() =>
                 {
                     OnSearchActivted();

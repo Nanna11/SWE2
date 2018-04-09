@@ -12,9 +12,25 @@ namespace PicDB
     {
         SearchViewModel _Search;
         IPictureListViewModel _List;
+        CameraListViewModel _CameraList;
+        PhotographerListViewModel _PhotographerList;
         BusinessLayer bl = new BusinessLayer();
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public MainWindowViewModel()
+        {
+            bl.Sync();
+            _List = new PictureListViewModel(bl.GetPictures(null, null, null, null));
+            _CameraList = new CameraListViewModel(bl.GetCameras());
+            ((PictureListViewModel)List).SetCameras(CameraList);
+            _PhotographerList = new PhotographerListViewModel(bl.GetPhotographers());
+            ((PictureListViewModel)List).SetPhotographers(PhotographerList);
+            _Search = new SearchViewModel();
+            //nicht neu instanzieren
+            _Search.SearchActivated += (s,e)=> List = new PictureListViewModel(bl.GetPictures(e.Searchtext, null, null, null));
+
+        }
 
         public IPictureViewModel CurrentPicture
         {
@@ -49,21 +65,43 @@ namespace PicDB
             set
             {
                 _List = value;
+                ((PictureListViewModel)List).SetPhotographers(PhotographerList);
                 OnPropertyChanged("List");
                 OnPropertyChanged("CurrentPicture");
             }
         }
 
+        public PhotographerListViewModel PhotographerList
+        {
+            get
+            {
+                return _PhotographerList;
+            }
+
+            set
+            {
+                _PhotographerList = value;
+                ((PictureListViewModel)List).SetPhotographers(PhotographerList);
+                OnPropertyChanged("PhotographerList");
+            }
+        }
+
+        public CameraListViewModel CameraList
+        {
+            get
+            {
+                return _CameraList;
+            }
+
+            set
+            {
+                _CameraList = value;
+                OnPropertyChanged("CameraList");
+            }
+        }
+
         public ISearchViewModel Search => _Search;
         
-        public MainWindowViewModel()
-        {
-            bl.Sync();
-            List = new PictureListViewModel(bl.GetPictures(null, null, null, null));
-            _Search = new SearchViewModel();
-            _Search.SearchActivated += SearchPictures;
-
-        }
 
         internal void CurrentPictureChanged()
         {
@@ -78,11 +116,5 @@ namespace PicDB
                 handler(this, new PropertyChangedEventArgs(name));
             }
         }
-
-        public void SearchPictures(object sender, SearchEventArgs e)
-        {
-            List = new PictureListViewModel(bl.GetPictures(e.Searchtext, null, null, null));
-        }
-
     }
 }
