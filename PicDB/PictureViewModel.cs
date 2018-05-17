@@ -43,6 +43,7 @@ namespace PicDB
             if (_PictureModel.Camera != null)
             {
                 _CameraViewModel = new CameraViewModel(_PictureModel.Camera);
+                ((CameraViewModel)_CameraViewModel).PropertyChanged += new PropertyChangedEventHandler(SubPropertyChanged);
             }
         }
         public int ID => _PictureModel.ID;
@@ -139,8 +140,12 @@ namespace PicDB
             set
             {
                 _PhotographerViewModel = value;
-                _PictureModel.Photographer = ((PhotographerViewModel)_PhotographerViewModel).PhotographerModel;
-                ((PhotographerViewModel)_PhotographerViewModel).PropertyChanged += new PropertyChangedEventHandler(SubPropertyChanged);
+                if (_PhotographerViewModel == null) _PictureModel.Photographer = null;
+                else
+                {
+                    _PictureModel.Photographer = ((PhotographerViewModel)_PhotographerViewModel).PhotographerModel;
+                    ((PhotographerViewModel)_PhotographerViewModel).PropertyChanged += new PropertyChangedEventHandler(SubPropertyChanged);
+                }
                 OnPropertyChanged("Photographer");
                 OnPropertyChanged("DisplayName");
             }
@@ -152,8 +157,10 @@ namespace PicDB
             get { return _CameraViewModel; }
             set
             {
-                _PictureModel.Camera = ((CameraViewModel)value).CameraModel;
+                if (value != null) _PictureModel.Camera = ((CameraViewModel)value).CameraModel;
+                else _PictureModel.Camera = null;
                 _CameraViewModel = value;
+                ((CameraViewModel)_CameraViewModel).PropertyChanged += new PropertyChangedEventHandler(SubPropertyChanged);
             }
         }
 
@@ -196,7 +203,14 @@ namespace PicDB
                         if (_PictureModel.Camera != null) _CameraViewModel = new CameraViewModel(_PictureModel.Camera);
                         else _CameraViewModel = null;
                         OnPropertyChanged("Camera");
+                        OnPropertyChanged("EXIF");
                     }
+                    break;
+                case "ISOLimitGood":
+                    if(sender == _CameraViewModel) OnPropertyChanged("ISOLimitGood");
+                    break;
+                case "ISOLimitAcceptable":
+                    if (sender == _CameraViewModel) OnPropertyChanged("ISOLimitAcceptable");
                     break;
             }
         }

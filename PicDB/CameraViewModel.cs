@@ -11,35 +11,60 @@ namespace PicDB
 {
     public class CameraViewModel : ICameraViewModel, INotifyPropertyChanged
     {
-        ICameraModel _Camera;
+        CameraModel _Camera;
         int _NumberOfPictures;
         public event PropertyChangedEventHandler PropertyChanged;
+        DateTime? _LastBoughtOn = null;
+        string _LastMake = null;
+        string _LastProducer = null;
 
         public CameraViewModel(ICameraModel c)
         {
-            _Camera = c;
+            _Camera = (CameraModel)c;
+            _Camera.PropertyChanged += SubPropertyChanged;
         }
 
         public int ID => _Camera.ID;
 
         public string Producer {
             get => _Camera.Producer;
-            set => _Camera.Producer = value;
+            set
+            {
+                _LastProducer = _Camera.Producer;
+                _Camera.Producer = value;
+                OnPropertyChanged("Producer");
+                OnPropertyChanged("DisplayName");
+            }
         }
 
         public string Make {
             get => _Camera.Make;
-            set => _Camera.Make = value;
+            set
+            {
+                _LastMake = _Camera.Make;
+                _Camera.Make = value;
+                OnPropertyChanged("Make");
+                OnPropertyChanged("DisplayName");
+            }
         }
 
         public DateTime? BoughtOn {
             get => _Camera.BoughtOn;
-            set => _Camera.BoughtOn = value;
+            set
+            {
+                _LastBoughtOn = _Camera.BoughtOn;
+                _Camera.BoughtOn = value;
+                OnPropertyChanged("BoughtOn");
+            }
         }
 
         public string Notes {
             get => _Camera.Notes;
-            set => _Camera.Notes = value;
+            set
+            {
+                _Camera.Notes = value;
+                OnPropertyChanged("Notes");
+            }
         }
 
         public int NumberOfPictures => _NumberOfPictures;
@@ -171,6 +196,18 @@ namespace PicDB
             {
                 handler(this, new PropertyChangedEventArgs(name));
             }
+        }
+
+        public void UndoUpdate()
+        {
+            if(!IsValidBoughtOn) BoughtOn = _LastBoughtOn;
+            if(!IsValidMake) Make = _LastMake;
+            if(!IsValidProducer) Producer = _LastProducer;
+        }
+
+        void SubPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (sender == _Camera) OnPropertyChanged(e.PropertyName);
         }
     }
 }

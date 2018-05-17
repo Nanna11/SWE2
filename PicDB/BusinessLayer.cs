@@ -14,6 +14,8 @@ namespace PicDB
     {
         IOwnDataAccessLayer dal = DBConnectionFactory.Instance.CreateDal("PicDB", "PicDB", "localhost", "PicDB");
         static string _picturepath;
+        public delegate void ErrorEventHander(string message);
+        public event ErrorEventHander Error;
 
         public BusinessLayer(string path)
         {
@@ -42,6 +44,31 @@ namespace PicDB
         {
             PictureViewModel pvm = (PictureViewModel)currentPicture;
             Save(pvm.PictureModel);
+        }
+
+        internal void CurrentCameraChanged(ICameraViewModel currentCamera)
+        {
+            CameraViewModel cvm = (CameraViewModel)currentCamera;
+            if (!cvm.IsValid)
+            {
+                Error(cvm.ValidationSummary);
+                cvm.UndoUpdate();
+                return;
+            }
+            Save(cvm.CameraModel);
+        }
+
+        internal void CurrentPhotographerChanged(IPhotographerViewModel currentPhotographer)
+        {
+            PhotographerViewModel pvm = (PhotographerViewModel)currentPhotographer;
+            if (!pvm.IsValid)
+            {
+                Error(pvm.ValidationSummary);
+                pvm.UndoUpdate();
+                return;
+            }
+
+            Save(pvm.PhotographerModel);
         }
 
         public void DeletePhotographer(int ID)

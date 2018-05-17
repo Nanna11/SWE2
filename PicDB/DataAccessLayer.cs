@@ -28,7 +28,10 @@ namespace PicDB
 
         public void DeletePhotographer(int ID)
         {
-
+            foreach(PictureModel p in _Pictures.Values)
+            {
+                if (p.Photographer?.ID == ID) p.Photographer = null;
+            }
             SqlCommand c = new SqlCommand(null, dbc);
             c.CommandText = "UPDATE PICTURES SET fk_Photographers_ID = NULL WHERE fk_Photographers_ID = @id; DELETE FROM PHOTOGRAPHERS WHERE ID = @id";
             SqlParameter id = new SqlParameter("@id", SqlDbType.Int, 0);
@@ -669,7 +672,8 @@ namespace PicDB
             c.Parameters.Add(ID);
 
             SqlParameter FirstName = new SqlParameter("@FirstName", SqlDbType.VarChar, string.IsNullOrEmpty(photographer.FirstName) ? 1 : photographer.FirstName.Length);
-            FirstName.Value = photographer.FirstName;
+            if (photographer.FirstName == null) FirstName.Value = DBNull.Value;
+            else FirstName.Value = photographer.FirstName;
             c.Parameters.Add(FirstName);
 
             SqlParameter LastName = new SqlParameter("@LastName", SqlDbType.VarChar, photographer.LastName.Length);
@@ -677,11 +681,13 @@ namespace PicDB
             c.Parameters.Add(LastName);
 
             SqlParameter Bithdate = new SqlParameter("@Birthdate", SqlDbType.Date, 0);
-            Bithdate.Value = (SqlDateTime)photographer.BirthDay;
+            if (photographer.BirthDay == null) Bithdate.Value = DBNull.Value;
+            else Bithdate.Value = photographer.BirthDay;
             c.Parameters.Add(Bithdate);
 
             SqlParameter Notes = new SqlParameter("@Notes", SqlDbType.Text, string.IsNullOrEmpty(photographer.Notes) ? 1 : photographer.Notes.Length);
-            Notes.Value = photographer.Notes;
+            if (photographer.Notes == null) Notes.Value = DBNull.Value;
+            else Notes.Value = photographer.Notes;
             c.Parameters.Add(Notes);
 
             c.Prepare();
@@ -755,7 +761,7 @@ namespace PicDB
         private void UpdateCamera(ICameraModel camera)
         {
             SqlCommand c = new SqlCommand(null, dbc);
-            c.CommandText = "UPDATE Cameras SWT Producer = @Producer, Make = @Make, BoughtOn = @BoughtOn, Notes = @Notes, ISOLimitGood = @ISOLimitGood, ISOLimitAcceptable = @ISOLimitAcceptable) WHERE ID = @ID";
+            c.CommandText = "UPDATE Cameras SET Producer = @Producer, Make = @Make, BoughtOn = @BoughtOn, Notes = @Notes, ISOLimitGood = @ISOLimitGood, ISOLimitAcceptable = @ISOLimitAcceptable WHERE ID = @ID";
 
             SqlParameter ID = new SqlParameter("@ID", SqlDbType.Int, 0);
             ID.Value = camera.ID;
@@ -807,6 +813,10 @@ namespace PicDB
 
         public void DeleteCamera(int ID)
         {
+            foreach(PictureModel p in _Pictures.Values)
+            {
+                if (p.Camera?.ID == ID) p.Camera = null;
+            }
             SqlCommand c = new SqlCommand(null, dbc);
             c.CommandText = "UPDATE PICTURES SET fk_Cameras_ID = NULL WHERE fk_Cameras_ID = @id; DELETE FROM CAMERAS WHERE ID = @id";
             SqlParameter id = new SqlParameter("@id", SqlDbType.Int, 0);

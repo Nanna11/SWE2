@@ -2,6 +2,7 @@
 using BIF.SWE2.Interfaces.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -13,17 +14,21 @@ namespace PicDB
     public class PictureListViewModel : IPictureListViewModel, INotifyPropertyChanged
     {
         int _CurrentIndex = 0;
-        List<IPictureViewModel> _List;
+        ObservableCollection<IPictureViewModel> _List;
         public event PropertyChangedEventHandler PropertyChanged;
 
         public PictureListViewModel(IEnumerable<IPictureViewModel> p)
         {
-            _List = p.ToList<IPictureViewModel>();
+            _List = new ObservableCollection<IPictureViewModel>();
+            foreach(IPictureViewModel pic in List)
+            {
+                _List.Add(pic);
+            }
         }
 
         public PictureListViewModel(IEnumerable<IPictureModel> p)
         {
-            _List = new List<IPictureViewModel>();
+            _List = new ObservableCollection<IPictureViewModel>();
             foreach(PictureModel pic in p)
             {
                 PictureViewModel v = new PictureViewModel(pic);

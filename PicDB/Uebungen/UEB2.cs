@@ -26,7 +26,7 @@ namespace Uebungen
 
         public BIF.SWE2.Interfaces.ViewModels.IMainWindowViewModel GetMainWindowViewModel()
         {
-            return new MainWindowViewModel();
+            return new MainWindowViewModel(null, null, null);
         }
 
         public BIF.SWE2.Interfaces.Models.IPictureModel GetPictureModel(string filename)

@@ -39,6 +39,9 @@
     <Reference Include="BIF-SWE2.Interfaces">
       <HintPath>..\Libs\BIF-SWE2.Interfaces.dll</HintPath>
     </Reference>
+    <Reference Include="NumericUpDown">
+      <HintPath>..\Libs\NumericUpDown.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -62,6 +65,7 @@
     <Compile Include="CameraViewModel.cs" />
     <Compile Include="BusinessLayer.cs" />
     <Compile Include="ActionCommand.cs" />
+    <Compile Include="Delegates.cs" />
     <Compile Include="IOwnDataAccessLayer.cs" />
     <Compile Include="SearchEventArgs.cs" />
     <Compile Include="GlobalInformation.cs" />

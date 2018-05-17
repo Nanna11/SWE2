@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using BIF.SWE2.Interfaces;
@@ -7,7 +8,7 @@ using BIF.SWE2.Interfaces.Models;
 
 namespace PicDB
 {
-    public class CameraModel : ICameraModel
+    public class CameraModel : ICameraModel, INotifyPropertyChanged
     {
         int _ID;
         string _Producer;
@@ -16,6 +17,7 @@ namespace PicDB
         string _Notes;
         decimal _ISOLimitGood = 0;
         decimal _ISOLimitAcceptable = 0;
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public int ID
         {
@@ -27,25 +29,35 @@ namespace PicDB
         public string Producer {
             get { return _Producer; }
 
-            set { _Producer = value; }
+            set {
+                _Producer = value;
+                OnPropertyChanged("Producer");
+            }
         }
 
         public string Make {
             get { return _Make; }
 
-            set { _Make = value; }
+            set {
+                _Make = value;
+                OnPropertyChanged("Make");
+            }
         }
 
         public DateTime? BoughtOn {
             get { return _BoughtOn; }
 
-            set { _BoughtOn = value; }
+            set { _BoughtOn = value;
+                OnPropertyChanged("BoughtOn");
+            }
         }
 
         public string Notes {
             get { return _Notes; }
 
-            set { _Notes = value; }
+            set { _Notes = value;
+                OnPropertyChanged("Notes");
+            }
         }
 
         public decimal ISOLimitGood {
@@ -53,13 +65,23 @@ namespace PicDB
 
             set {
                 _ISOLimitGood = value;
+                OnPropertyChanged("ISOLimitGood");
             }
         }
 
         public decimal ISOLimitAcceptable {
             get { return _ISOLimitAcceptable; }
 
-            set { _ISOLimitAcceptable = value; }
+            set
+            {
+                _ISOLimitAcceptable = value;
+                OnPropertyChanged("ISOLimitAcceptable");
+            }
+        }
+
+        void OnPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

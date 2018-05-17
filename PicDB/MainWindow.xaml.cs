@@ -25,7 +25,7 @@ namespace PicDB
         public MainWindow()
         {
             GlobalInformation gi = GlobalInformation.InitializeInstance("Pictures");
-            mw = new MainWindowViewModel();
+            mw = new MainWindowViewModel(UpdatePictureSources, UpdatePhotographerSources, UpdateCameraSources);
             DataContext = mw;
         }
 
@@ -103,7 +103,7 @@ namespace PicDB
             resultStack.Children.Add(block);
         }
 
-        private void Save_Click(object sender, RoutedEventArgs e)
+        private void UpdatePictureSources()
         {
             List<TextBox> TextBoxes = new List<TextBox>();
             TextBoxes.Add(KeywordsLabel);
@@ -126,24 +126,51 @@ namespace PicDB
             box = Camera;
             bn = box.GetBindingExpression(ComboBox.SelectedItemProperty);
             bn.UpdateSource();
-
-            mw.CurrentPictureChanged();
         }
 
-        //private void SearchTextKeyDown(object sender, KeyEventArgs e)
-        //{
-        //    if (e.Key == Key.Return)
-        //    {
-        //        mw.SearchPictures(SearchText.Text);
-        //    }
-        //}
+        private void UpdatePhotographerSources()
+        {
+            List<TextBox> TextBoxes = new List<TextBox>();
+            TextBoxes.Add(FirstName);
+            TextBoxes.Add(LastName);
+            TextBoxes.Add(PhotographerNotes);
 
-        //private void SearchTextKeyUp(object sender, KeyEventArgs e)
-        //{
-        //    if ((sender as TextBox).Text == "")
-        //    {
-        //        mw.SearchPictures(null);
-        //    }
-        //}
+            BindingExpression bn;
+            foreach (TextBox tb in TextBoxes)
+            {
+                bn = tb.GetBindingExpression(TextBox.TextProperty);
+                bn.UpdateSource();
+            }
+            DatePicker date = Birthdate;
+            bn = date.GetBindingExpression(DatePicker.SelectedDateProperty);
+            bn.UpdateSource();
+        }
+
+        private void UpdateCameraSources()
+        {
+            List<TextBox> TextBoxes = new List<TextBox>();
+            TextBoxes.Add(Producer);
+            TextBoxes.Add(Make);
+            TextBoxes.Add(CameraNotes);
+
+            BindingExpression bn;
+            foreach (TextBox tb in TextBoxes)
+            {
+                bn = tb.GetBindingExpression(TextBox.TextProperty);
+                bn.UpdateSource();
+            }
+
+            DatePicker date = BoughtOn;
+            bn = date.GetBindingExpression(DatePicker.SelectedDateProperty);
+            bn.UpdateSource();
+
+            eisiWare.NumericUpDown iso = ISOLimitGood;
+            bn = BindingOperations.GetBindingExpression(iso, eisiWare.NumericUpDown._value);
+            bn.UpdateSource();
+
+            iso = ISOLimitAcceptable;
+            bn = iso.GetBindingExpression(eisiWare.NumericUpDown._value);
+            bn.UpdateSource();
+        }
     }
 }

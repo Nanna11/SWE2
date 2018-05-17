@@ -13,13 +13,14 @@ namespace PicDB
     {
         IEXIFModel _EXIFModel;
         ICameraViewModel _CameraViewModel;
-        IPictureViewModel _PictureViewModel;
+        PictureViewModel _PictureViewModel;
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public EXIFViewModel(IEXIFModel em, IPictureViewModel pvm)
+        public EXIFViewModel(IEXIFModel em, PictureViewModel pvm)
         {
             _EXIFModel = em;
             _PictureViewModel = pvm;
+            pvm.PropertyChanged += SubPropertyChanged;
         }
 
         public string Make => _EXIFModel.Make;
@@ -90,6 +91,14 @@ namespace PicDB
                     break;
                 case "ISOLimitAcceptable":
                     OnPropertyChanged("ISORating");
+                    break;
+                case "Camera":
+                    if(sender == _PictureViewModel)
+                    {
+                        OnPropertyChanged("Camera");
+                        OnPropertyChanged("ISORatingResource");
+                        OnPropertyChanged("ISORating");
+                    }
                     break;
             }
         }

@@ -14,6 +14,8 @@ namespace PicDB
         IPhotographerModel _PhotographerModel;
         int _NumberOfPictures;
         public event PropertyChangedEventHandler PropertyChanged;
+        DateTime? _LastBirthday= null;
+        string _LastLastName = null;
 
         public PhotographerViewModel(IPhotographerModel pm)
         {
@@ -35,6 +37,7 @@ namespace PicDB
             get => _PhotographerModel?.LastName;
             set
             {
+                _LastLastName = LastName;
                 _PhotographerModel.LastName = value;
                 OnPropertyChanged("LastName");
                 OnPropertyChanged("FullName");
@@ -43,7 +46,12 @@ namespace PicDB
 
         public DateTime? BirthDay {
             get => _PhotographerModel?.BirthDay;
-            set => _PhotographerModel.BirthDay = value;
+            set
+            {
+                _LastBirthday = BirthDay;
+                _PhotographerModel.BirthDay = value;
+                OnPropertyChanged("BirthDay");
+            }
         }
 
         public string Notes {
@@ -136,6 +144,12 @@ namespace PicDB
             {
                 return (PhotographerModel)_PhotographerModel;
             }
+        }
+
+        public void UndoUpdate()
+        {
+            if(!IsValidBirthDay) BirthDay = _LastBirthday;
+            if(!IsValidLastName) LastName = _LastLastName;
         }
     }
 }

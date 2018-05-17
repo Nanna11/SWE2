@@ -56,7 +56,7 @@ namespace Uebungen
 
         public BIF.SWE2.Interfaces.ViewModels.IMainWindowViewModel GetEmptyMainWindowViewModel()
         {
-            return new MainWindowViewModel();
+            return new MainWindowViewModel(null, null, null);
         }
 
         public BIF.SWE2.Interfaces.ViewModels.IPhotographerListViewModel GetEmptyPhotographerListViewModel()
