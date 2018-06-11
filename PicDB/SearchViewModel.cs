@@ -8,16 +8,19 @@ using System.Windows.Input;
 
 namespace PicDB
 {
-    public class SearchViewModel : ISearchViewModel//, INotifyPropertyChanged
+    public class SearchViewModel : ISearchViewModel
     {
         string _SearchText;
         public delegate void SearchActivatedEventHander(object sender, SearchEventArgs e);
         public event SearchActivatedEventHander SearchActivated;
+
+        /// <summary>
+        /// command for activating search
+        /// </summary>
         public ICommand OnEnterOrReturn
         {
             get
             {
-                //cache
                 return new ActionCommand(() =>
                 {
                     OnSearchActivted();
@@ -25,6 +28,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// The search text
+        /// </summary>
         public string SearchText {
             get
             {
@@ -37,6 +43,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// True, if a search is active
+        /// </summary>
         public bool IsActive
         {
             get
@@ -46,6 +55,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// Number of photos found.
+        /// </summary>
         public int ResultCount
         {
             get

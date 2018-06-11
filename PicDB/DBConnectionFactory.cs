@@ -8,28 +8,9 @@ namespace PicDB
 {
     public class DBConnectionFactory
     {
-        private static readonly DBConnectionFactory _dbf;
         private static bool _mock = false;
 
-        protected DBConnectionFactory()
-        {
-
-        }
-
-        static DBConnectionFactory()
-        {
-            _dbf = new DBConnectionFactory();
-        }
-
-        public static DBConnectionFactory Instance
-        {
-            get
-            {
-                return _dbf;
-            }
-        }
-
-        public bool Mock
+        public static bool Mock
         {
             set
             {
@@ -37,7 +18,7 @@ namespace PicDB
             }
         }
 
-        public IOwnDataAccessLayer CreateDal(string userID, string password, string server, string database)
+        public static IOwnDataAccessLayer CreateDal(string userID, string password, string server, string database)
         {
             if(_mock == false)
             {

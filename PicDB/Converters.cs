@@ -6,12 +6,16 @@ using System.Windows.Media.Imaging;
 
 namespace PicDB
 {
+    /// <summary>
+    /// converts hasFocus and Text Property into Visibility
+    /// visible if neither text nor focus
+    /// else collapsed
+    /// </summary>
     public class TextInputToVisibilityConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            // Always test MultiValueConverter inputs for non-null 
-            // (to avoid crash bugs for views in the designer) 
+            
             if (values[0] is bool && values[1] is bool)
             {
                 bool hasText = !(bool)values[0];
@@ -27,6 +31,9 @@ namespace PicDB
         }
     }
 
+    /// <summary>
+    /// converts null value to visible - other to collapsed
+    /// </summary>
     public class NullToVisibleConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -43,6 +50,9 @@ namespace PicDB
         }
     }
 
+    /// <summary>
+    /// converts null value to collapsed - other to visible
+    /// </summary>
     public class NullToInvisibleConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -59,6 +69,9 @@ namespace PicDB
         }
     }
 
+    /// <summary>
+    /// converts null to false - other to true
+    /// </summary>
     public class NullToFalseConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -73,6 +86,9 @@ namespace PicDB
         }
     }
 
+    /// <summary>
+    /// converts null to collapsed - other to visible
+    /// </summary>
     public class NullToCollapsedConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -87,6 +103,9 @@ namespace PicDB
         }
     }
 
+    /// <summary>
+    /// converts false to collapsed - other to visible
+    /// </summary>
     public class FalseToCollapsedConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -101,7 +120,9 @@ namespace PicDB
         }
     }
 
-
+    /// <summary>
+    /// converts given string to bitmapimage
+    /// </summary>
     public class PathToBitmapImageConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

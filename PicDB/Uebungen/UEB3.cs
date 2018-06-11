@@ -25,8 +25,7 @@ namespace Uebungen
         public void TestSetup(string picturePath)
         {
             Directory.CreateDirectory(picturePath);
-            DBConnectionFactory dbf = DBConnectionFactory.Instance;
-            dbf.Mock = true;
+            DBConnectionFactory.Mock = true;
             try
             {
                 GlobalInformation gi = GlobalInformation.InitializeInstance(picturePath);
@@ -36,7 +35,7 @@ namespace Uebungen
 
         public IDataAccessLayer GetDataAccessLayer()
         {
-            return DBConnectionFactory.Instance.CreateDal("PicDB", "PicDB", "localhost", "PicDB");
+            return DBConnectionFactory.CreateDal("PicDB", "PicDB", "localhost", "PicDB");
         }
 
         public ISearchViewModel GetSearchViewModel()

@@ -18,46 +18,68 @@ namespace PicDB
         string _LastMake = null;
         string _LastProducer = null;
 
+        /// <summary>
+        /// creates new camera view model for given ICameraModel
+        /// </summary>
+        /// <param name="c"></param>
         public CameraViewModel(ICameraModel c)
         {
             _Camera = (CameraModel)c;
             _Camera.PropertyChanged += SubPropertyChanged;
         }
 
+        /// <summary>
+        /// gets/sets the ID of camera
+        /// </summary>
         public int ID => _Camera.ID;
 
+        /// <summary>
+        /// gets/sets producer of camera
+        /// </summary>
         public string Producer {
             get => _Camera.Producer;
             set
             {
-                _LastProducer = _Camera.Producer;
+                string tmp = _Camera.Producer;
                 _Camera.Producer = value;
+                if (IsValidProducer) _LastProducer = tmp;
                 OnPropertyChanged("Producer");
                 OnPropertyChanged("DisplayName");
             }
         }
 
+        /// <summary>
+        /// gets/sets make of camera
+        /// </summary>
         public string Make {
             get => _Camera.Make;
             set
             {
-                _LastMake = _Camera.Make;
+                string tmp = _Camera.Make;
                 _Camera.Make = value;
+                if (IsValidMake) _LastMake = tmp;
                 OnPropertyChanged("Make");
                 OnPropertyChanged("DisplayName");
             }
         }
 
+        /// <summary>
+        /// gets/sets date on which camera was bought
+        /// </summary>
         public DateTime? BoughtOn {
             get => _Camera.BoughtOn;
             set
             {
-                _LastBoughtOn = _Camera.BoughtOn;
+                DateTime? tmp = _Camera.BoughtOn;
                 _Camera.BoughtOn = value;
+                if (IsValidBoughtOn) _LastBoughtOn = tmp;
                 OnPropertyChanged("BoughtOn");
             }
         }
 
+        /// <summary>
+        /// gets/sets notes for camera
+        /// </summary>
         public string Notes {
             get => _Camera.Notes;
             set
@@ -67,8 +89,14 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// returns number of pictures taken with camera
+        /// </summary>
         public int NumberOfPictures => _NumberOfPictures;
 
+        /// <summary>
+        /// checks if model is valid
+        /// </summary>
         public bool IsValid
         {
             get
@@ -78,6 +106,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// creates a string containing validation result
+        /// </summary>
         public string ValidationSummary
         {
             get
@@ -106,6 +137,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// checks if producer is valid
+        /// </summary>
         public bool IsValidProducer
         {
             get
@@ -121,6 +155,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// checks if make is valid
+        /// </summary>
         public bool IsValidMake
         {
             get
@@ -136,6 +173,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// checks if bought on is a date in the past
+        /// </summary>
         public bool IsValidBoughtOn
         {
             get
@@ -146,6 +186,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// gets/sets the ISO Limit for a good picture
+        /// </summary>
         public decimal ISOLimitGood {
             get => _Camera.ISOLimitGood;
             set
@@ -155,6 +198,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// gets/sets the iso limit for an acceptable picture
+        /// </summary>
         public decimal ISOLimitAcceptable {
             get => _Camera.ISOLimitAcceptable;
             set
@@ -164,6 +210,11 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// translates ISO value of a picture into corresponding ISO reating for camera
+        /// </summary>
+        /// <param name="iso"></param>
+        /// <returns></returns>
         public ISORatings TranslateISORating(decimal iso)
         {
             if (iso == 0) return ISORatings.NotDefined;
@@ -173,6 +224,9 @@ namespace PicDB
             else throw new ArgumentOutOfRangeException();
         }
 
+        /// <summary>
+        /// returns camera model
+        /// </summary>
         public ICameraModel CameraModel
         {
             get
@@ -180,7 +234,9 @@ namespace PicDB
                 return _Camera;
             }
         }
-
+        /// <summary>
+        /// gets display name of camera
+        /// </summary>
         public string DisplayName
         {
             get
@@ -198,6 +254,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// restore last valid state
+        /// </summary>
         public void UndoUpdate()
         {
             if(!IsValidBoughtOn) BoughtOn = _LastBoughtOn;

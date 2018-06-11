@@ -12,11 +12,15 @@ namespace PicDB
 {
     public class BusinessLayer : IBusinessLayer
     {
-        IOwnDataAccessLayer dal = DBConnectionFactory.Instance.CreateDal("PicDB", "PicDB", "localhost", "PicDB");
+        IOwnDataAccessLayer dal = DBConnectionFactory.CreateDal("PicDB", "PicDB", "localhost", "PicDB");
         static string _picturepath;
         public delegate void ErrorEventHander(string message);
         public event ErrorEventHander Error;
 
+        /// <summary>
+        /// constructor
+        /// </summary>
+        /// <param name="path">path from execution folder to pictures that should be managed</param>
         public BusinessLayer(string path)
         {
             if (String.IsNullOrEmpty(path)) throw new PathNotSetException("Path was empty");
@@ -24,6 +28,9 @@ namespace PicDB
             _picturepath = Path.Combine(deploypath, path);
         }
 
+        /// <summary>
+        /// constructor taking picture path from global config
+        /// </summary>
         public BusinessLayer()
         {
             string folder;
@@ -40,12 +47,21 @@ namespace PicDB
             _picturepath = Path.Combine(deploypath, folder);
         }
 
+        /// <summary>
+        /// save picture changes to database
+        /// </summary>
+        /// <param name="currentPicture"></param>
         internal void CurrentPictureChanged(IPictureViewModel currentPicture)
         {
             PictureViewModel pvm = (PictureViewModel)currentPicture;
             Save(pvm.PictureModel);
         }
 
+        /// <summary>
+        /// save camera changes to database
+        /// check if model is valid and undo updates if not valid
+        /// </summary>
+        /// <param name="currentCamera"></param>
         internal void CurrentCameraChanged(ICameraViewModel currentCamera)
         {
             CameraViewModel cvm = (CameraViewModel)currentCamera;
@@ -58,6 +74,11 @@ namespace PicDB
             Save(cvm.CameraModel);
         }
 
+        /// <summary>
+        /// save photographer changes to database
+        /// check if model is valid and undo updates if not valid
+        /// </summary>
+        /// <param name="currentPhotographer"></param>
         internal void CurrentPhotographerChanged(IPhotographerViewModel currentPhotographer)
         {
             PhotographerViewModel pvm = (PhotographerViewModel)currentPhotographer;
@@ -71,21 +92,38 @@ namespace PicDB
             Save(pvm.PhotographerModel);
         }
 
+        /// <summary>
+        /// delete photographer with given ID
+        /// </summary>
+        /// <param name="ID"></param>
         public void DeletePhotographer(int ID)
         {
             dal.DeletePhotographer(ID);
         }
 
+        /// <summary>
+        /// delete picture with given ID
+        /// </summary>
+        /// <param name="ID"></param>
         public void DeletePicture(int ID)
         {
             dal.DeletePicture(ID);
         }
 
+        /// <summary>
+        /// delete camera with given ID
+        /// </summary>
+        /// <param name="ID"></param>
         public void DeleteCamera(int ID)
         {
             dal.DeleteCamera(ID);
         }
 
+        /// <summary>
+        /// gets demo exif data if picture is present in folder
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
         public IEXIFModel ExtractEXIF(string filename)
         {
             IEnumerable<string> files = Directory.EnumerateFiles(_picturepath);
@@ -93,6 +131,11 @@ namespace PicDB
             else throw new FileNotFoundException();
         }
 
+        /// <summary>
+        /// gets demo iptc data if picture is present in folder
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
         public IIPTCModel ExtractIPTC(string filename)
         {
             IEnumerable<string> files = Directory.EnumerateFiles(_picturepath);
@@ -100,56 +143,106 @@ namespace PicDB
             else throw new FileNotFoundException();
         }
 
+        /// <summary>
+        /// returns camera with given ID
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <returns></returns>
         public ICameraModel GetCamera(int ID)
         {
             return dal.GetCamera(ID);
         }
 
+        /// <summary>
+        /// gets all cameras
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<ICameraModel> GetCameras()
         {
             return dal.GetCameras();
         }
 
+        /// <summary>
+        /// gets photographer with given ID
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <returns></returns>
         public IPhotographerModel GetPhotographer(int ID)
         {
             return dal.GetPhotographer(ID);
         }
 
+        /// <summary>
+        /// gets all photographers
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<IPhotographerModel> GetPhotographers()
         {
             return dal.GetPhotographers();
         }
 
+        /// <summary>
+        /// gets picture with given ID
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <returns></returns>
         public IPictureModel GetPicture(int ID)
         {
             return dal.GetPicture(ID);
         }
 
+        /// <summary>
+        /// gets all pictures
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<IPictureModel> GetPictures()
         {
             return dal.GetPictures(null, null, null, null);
         }
 
+        /// <summary>
+        /// gets filtered pictures
+        /// </summary>
+        /// <param name="namePart"></param>
+        /// <param name="photographerParts"></param>
+        /// <param name="iptcParts"></param>
+        /// <param name="exifParts"></param>
+        /// <returns></returns>
         public IEnumerable<IPictureModel> GetPictures(string namePart, IPhotographerModel photographerParts, IIPTCModel iptcParts, IEXIFModel exifParts)
         {
             return dal.GetPictures(namePart, photographerParts, iptcParts, exifParts);
         }
 
+        /// <summary>
+        /// save a picture to database
+        /// </summary>
+        /// <param name="picture"></param>
         public void Save(IPictureModel picture)
         {
             dal.Save(picture);
         }
 
+        /// <summary>
+        /// save a photographer to database
+        /// </summary>
+        /// <param name="photographer"></param>
         public void Save(IPhotographerModel photographer)
         {
             dal.Save(photographer);
         }
 
+        /// <summary>
+        /// save a camera to database
+        /// </summary>
+        /// <param name="camera"></param>
         public void Save(ICameraModel camera)
         {
             dal.Save(camera);
         }
 
+        /// <summary>
+        /// sync database with folder
+        /// </summary>
         public void Sync()
         {
             IEnumerable<string> tmp = Directory.EnumerateFiles(_picturepath);
@@ -183,11 +276,20 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// change IPTC data in file
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <param name="iptc"></param>
         public void WriteIPTC(string filename, IIPTCModel iptc)
         {
             
         }
 
+        /// <summary>
+        /// creates demo exif data
+        /// </summary>
+        /// <returns></returns>
         private IEXIFModel GetDemoExif()
         {
             EXIFModel e = new EXIFModel();
@@ -200,6 +302,10 @@ namespace PicDB
             return e;
         }
 
+        /// <summary>
+        /// creates demo IPTC data
+        /// </summary>
+        /// <returns></returns>
         private IIPTCModel GetDemoIPTC()
         {
             IIPTCModel i = new IPTCModel();

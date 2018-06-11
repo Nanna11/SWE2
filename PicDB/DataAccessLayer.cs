@@ -18,6 +18,13 @@ namespace PicDB
         Dictionary<int,CameraModel> _Cameras = new Dictionary<int, CameraModel>();
         Dictionary<int, PictureModel> _Pictures = new Dictionary<int, PictureModel>();
 
+        /// <summary>
+        /// creates new connection to SQL Server
+        /// </summary>
+        /// <param name="userID"></param>
+        /// <param name="password"></param>
+        /// <param name="server"></param>
+        /// <param name="database"></param>
         public DataAccessLayer(string userID, string password, string server, string database)
         {
             string connectionstring = "user id="+ userID + ";password=" + password + ";server=" + server + ";Trusted_Connection=yes;database="+ database + ";connection timeout=5; MultipleActiveResultSets=true";
@@ -26,6 +33,10 @@ namespace PicDB
             if (dbc.State != ConnectionState.Open) throw new DBConnectionNotAvailableException();
         }
 
+        /// <summary>
+        /// deletes photographer with given ID
+        /// </summary>
+        /// <param name="ID"></param>
         public void DeletePhotographer(int ID)
         {
             foreach(PictureModel p in _Pictures.Values)
@@ -43,6 +54,10 @@ namespace PicDB
             _Photographers.Remove(ID);
         }
 
+        /// <summary>
+        /// deletes picture with given ID
+        /// </summary>
+        /// <param name="ID"></param>
         public void DeletePicture(int ID)
         {
             SqlCommand c = new SqlCommand(null, dbc);
@@ -56,6 +71,11 @@ namespace PicDB
             _Pictures.Remove(ID);
         }
 
+        /// <summary>
+        /// returns camera with given ID
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <returns></returns>
         public ICameraModel GetCamera(int ID)
         {
             if (_Cameras.ContainsKey(ID))
@@ -119,6 +139,10 @@ namespace PicDB
             
         }
 
+        /// <summary>
+        /// gets all cameras from database
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<ICameraModel> GetCameras()
         {
             Dictionary<int, CameraModel> newCameras = new Dictionary<int, CameraModel>();
@@ -168,6 +192,11 @@ namespace PicDB
             return _Cameras.Values.ToList();
         }
 
+        /// <summary>
+        /// gets photographer with given ID
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <returns></returns>
         public IPhotographerModel GetPhotographer(int ID)
         {
             if (_Photographers.ContainsKey(ID))
@@ -216,6 +245,10 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// gets all photographers from database
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<IPhotographerModel> GetPhotographers()
         {
             Dictionary<int, PhotographerModel> newPhotographers = new Dictionary<int, PhotographerModel>();
@@ -251,6 +284,11 @@ namespace PicDB
             return _Photographers.Values.ToList();
         }
 
+        /// <summary>
+        /// gets picture with given ID including corresponding photographer and camera if neccessary
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <returns></returns>
         public IPictureModel GetPicture(int ID)
         {
             if (_Pictures.ContainsKey(ID))
@@ -297,12 +335,26 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// returns picture based on filter criteria
+        /// only namePart relevant - everything else will be ignored
+        /// returns all pictures if namePart is null
+        /// </summary>
+        /// <param name="namePart"></param>
+        /// <param name="photographerParts"></param>
+        /// <param name="iptcParts"></param>
+        /// <param name="exifParts"></param>
+        /// <returns></returns>
         public IEnumerable<IPictureModel> GetPictures(string namePart, IPhotographerModel photographerParts, BIF.SWE2.Interfaces.Models.IIPTCModel iptcParts, IEXIFModel exifParts)
         {
             if (String.IsNullOrEmpty(namePart)) return UnfilteredPictures();
             else return FilteredPictures(namePart);
         }
 
+        /// <summary>
+        /// returns all pictures from database
+        /// </summary>
+        /// <returns></returns>
         IEnumerable<IPictureModel> UnfilteredPictures()
         {
             Dictionary<int, PictureModel> newPictures = new Dictionary<int, PictureModel>();
@@ -353,6 +405,11 @@ namespace PicDB
             return _Pictures.Values.ToList();
         }
 
+        /// <summary>
+        /// returns all pictures where filename contains namePart
+        /// </summary>
+        /// <param name="namePart"></param>
+        /// <returns></returns>
         IEnumerable<IPictureModel> FilteredPictures(string namePart)
         {
             Dictionary<int, PictureModel> filteredPictures = new Dictionary<int, PictureModel>();
@@ -406,12 +463,20 @@ namespace PicDB
             return filteredPictures.Values.ToList();
         }
 
+        /// <summary>
+        /// save given picturemodel to database
+        /// </summary>
+        /// <param name="picture"></param>
         public void Save(IPictureModel picture)
         {
             if (_Pictures.ContainsKey(picture.ID)) UpdatePicture(picture);
             else InsertPicture(picture);            
         }
 
+        /// <summary>
+        /// update an existing picture entry
+        /// </summary>
+        /// <param name="picture"></param>
         private void UpdatePicture(IPictureModel picture)
         {
             _Pictures[picture.ID] = (PictureModel)picture;
@@ -511,6 +576,10 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// insert a new picture entry into database
+        /// </summary>
+        /// <param name="picture"></param>
         private void InsertPicture(IPictureModel picture)
         {
             PictureModel p = (PictureModel)picture;
@@ -615,12 +684,20 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// save photographer model to database
+        /// </summary>
+        /// <param name="photographer"></param>
         public void Save(IPhotographerModel photographer)
         {
             if (_Photographers.ContainsKey(photographer.ID)) UpdatePhotographer(photographer);
             else InsertPhotograper(photographer);
         }
 
+        /// <summary>
+        /// insert a new photographer entry into database
+        /// </summary>
+        /// <param name="photographer"></param>
         private void InsertPhotograper(IPhotographerModel photographer)
         {
             PhotographerModel p = (PhotographerModel)photographer;
@@ -660,6 +737,10 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// update an existing photographer entry
+        /// </summary>
+        /// <param name="photographer"></param>
         private void UpdatePhotographer(IPhotographerModel photographer)
         {
             PhotographerModel p = (PhotographerModel)photographer;
@@ -702,12 +783,20 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// save camera model to database
+        /// </summary>
+        /// <param name="camera"></param>
         public void Save(ICameraModel camera)
         {
             if (_Cameras.ContainsKey(camera.ID)) UpdateCamera(camera);
             else InsertCamera(camera);
         }
 
+        /// <summary>
+        /// insert new camera entry into database
+        /// </summary>
+        /// <param name="camera"></param>
         private void InsertCamera(ICameraModel camera)
         {
             SqlCommand c = new SqlCommand(null, dbc);
@@ -758,6 +847,10 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// update existing camera entry
+        /// </summary>
+        /// <param name="camera"></param>
         private void UpdateCamera(ICameraModel camera)
         {
             SqlCommand c = new SqlCommand(null, dbc);
@@ -811,6 +904,10 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// delete camera with given ID from database
+        /// </summary>
+        /// <param name="ID"></param>
         public void DeleteCamera(int ID)
         {
             foreach(PictureModel p in _Pictures.Values)

@@ -15,6 +15,10 @@ namespace PicDB
         int _CurrentIndex = 0;
         public event PropertyChangedEventHandler PropertyChanged;
 
+        /// <summary>
+        /// creates camera listviewmodel containing picures in given enumerable
+        /// </summary>
+        /// <param name="list"></param>
         public CameraListViewModel(IEnumerable<ICameraViewModel> list)
         {
             _List = new ObservableCollection<ICameraViewModel>();
@@ -24,6 +28,10 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// creates camera listviewmodel containing picures in given enumerable
+        /// </summary>
+        /// <param name="list"></param>
         public CameraListViewModel(IEnumerable<ICameraModel> list)
         {
             _List = new ObservableCollection<ICameraViewModel>();
@@ -33,8 +41,14 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// returns list of pictures in picturelistviewmodel
+        /// </summary>
         public IEnumerable<ICameraViewModel> List => _List;
 
+        /// <summary>
+        /// returns currently selected Camera
+        /// </summary>
         public ICameraViewModel CurrentCamera
         {
             get
@@ -44,8 +58,14 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// returns number of pictures contained in cameralistviewmodel
+        /// </summary>
         public int Count => List.Count();
 
+        /// <summary>
+        /// gets and sets the index of currently selected picture
+        /// </summary>
         public int CurrentIndex
         {
             get

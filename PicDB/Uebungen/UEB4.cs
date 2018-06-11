@@ -26,8 +26,7 @@ namespace Uebungen
         public void TestSetup(string picturePath)
         {
             Directory.CreateDirectory(picturePath);
-            DBConnectionFactory dbf = DBConnectionFactory.Instance;
-            dbf.Mock = true;
+            DBConnectionFactory.Mock = true;
             try
             {
                 GlobalInformation gi = GlobalInformation.InitializeInstance(picturePath);

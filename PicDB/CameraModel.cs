@@ -19,6 +19,9 @@ namespace PicDB
         decimal _ISOLimitAcceptable = 0;
         public event PropertyChangedEventHandler PropertyChanged;
 
+        /// <summary>
+        /// gets/sets the ID of camera
+        /// </summary>
         public int ID
         {
             get { return _ID; }
@@ -26,6 +29,9 @@ namespace PicDB
             set { _ID = value; }
         }
 
+        /// <summary>
+        /// gets/sets producer of camera
+        /// </summary>
         public string Producer {
             get { return _Producer; }
 
@@ -35,6 +41,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// gets/sets make of camera
+        /// </summary>
         public string Make {
             get { return _Make; }
 
@@ -44,6 +53,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// gets/sets date on which camera was bought
+        /// </summary>
         public DateTime? BoughtOn {
             get { return _BoughtOn; }
 
@@ -52,6 +64,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// gets/sets notes for camera
+        /// </summary>
         public string Notes {
             get { return _Notes; }
 
@@ -60,6 +75,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// gets/sets the ISO Limit for a good picture
+        /// </summary>
         public decimal ISOLimitGood {
             get { return _ISOLimitGood; }
 
@@ -69,6 +87,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// gets/sets the iso limit for an acceptable picture
+        /// </summary>
         public decimal ISOLimitAcceptable {
             get { return _ISOLimitAcceptable; }
 
