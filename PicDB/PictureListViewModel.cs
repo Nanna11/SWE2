@@ -36,6 +36,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// ViewModel of the current picture
+        /// </summary>
         public IPictureViewModel CurrentPicture
         {
             get
@@ -45,8 +48,15 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// List of all PictureViewModels
+        /// </summary>
         public IEnumerable<IPictureViewModel> List => _List;
 
+
+        /// <summary>
+        /// All prev. pictures to the current selected picture.
+        /// </summary>
         public IEnumerable<IPictureViewModel> PrevPictures
         {
             get
@@ -60,6 +70,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// All next pictures to the current selected picture.
+        /// </summary>
         public IEnumerable<IPictureViewModel> NextPictures
         {
             get
@@ -73,8 +86,14 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// Number of all images
+        /// </summary>
         public int Count => List.Count<IPictureViewModel>();
 
+        /// <summary>
+        /// The current Index, 1 based
+        /// </summary>
         public int CurrentIndex
         {
             get
@@ -92,7 +111,9 @@ namespace PicDB
             }
         }
 
-
+        /// <summary>
+        /// {CurrentIndex} of {Cout}
+        /// </summary>
         public string CurrentPictureAsString
         {
             get

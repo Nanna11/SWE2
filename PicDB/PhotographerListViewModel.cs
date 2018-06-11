@@ -34,6 +34,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// The currently selected PhotographerViewModel
+        /// </summary>
         public IPhotographerViewModel CurrentPhotographer
         {
             get
@@ -43,6 +46,11 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// returns photographer from model with given ID
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <returns></returns>
         public PhotographerViewModel GetPhotographer(int ID)
         {
             foreach(IPhotographerViewModel p in List)
@@ -52,6 +60,10 @@ namespace PicDB
             return null;
         }
 
+        /// <summary>
+        /// add photographer to list view model
+        /// </summary>
+        /// <param name="p"></param>
         public void Add(PhotographerModel p)
         {
             if (p == null) return;
@@ -62,8 +74,14 @@ namespace PicDB
             OnPropertyChanged("Count");
         }
 
+        /// <summary>
+        /// counts elements in list
+        /// </summary>
         public int Count => List.Count();
 
+        /// <summary>
+        /// index of currently selected photographer
+        /// </summary>
         public int CurrentIndex
         {
             get
@@ -81,6 +99,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// returns list of photographers
+        /// </summary>
         public IEnumerable<IPhotographerViewModel> List => _List;
 
         void OnPropertyChanged(string propertyName)

@@ -245,39 +245,8 @@
                             </Label.Visibility>
                         </Label>
                     </Grid>
-                    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="95*"/>
-                            <ColumnDefinition Width="786*"/>
-                        </Grid.ColumnDefinitions>
-                        <ListBox SelectedIndex="{Binding CurrentIndex}" ItemsSource="{Binding List.List}" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Disabled" BorderThickness="0" Margin="0" Grid.ColumnSpan="2">
-                            <ListBox.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <VirtualizingStackPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsItemsHost="True" Orientation="Horizontal"/>
-                                </ItemsPanelTemplate>
-                            </ListBox.ItemsPanel>
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid VerticalAlignment="Stretch">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="*"></RowDefinition>
-                                            <RowDefinition Height="auto"></RowDefinition>
-                                        </Grid.RowDefinitions>
-                                        <Image Grid.Row="0" Stretch="Uniform" StretchDirection="DownOnly" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                                            <Image.Source>
-                                                <BitmapImage UriSource="{Binding FilePath, FallbackValue=null}">
-                                                </BitmapImage>
-                                            </Image.Source>
-                                        </Image>
-                                        <Label Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Center" Content="{Binding FileName, FallbackValue='unnamed'}">
-                                        </Label>
-                                    </Grid>
-
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </Grid>
                     <Button x:Name="Save" Content="Save" HorizontalAlignment="Left" Margin="165,374,0,0" Grid.Row="1" VerticalAlignment="Top" Width="75" Command="{Binding SavePicture}" Grid.Column="1"/>
+                    <local:PictureList Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2"></local:PictureList>
                 </Grid>
             </TabItem>
             <TabItem Header="Photographers">

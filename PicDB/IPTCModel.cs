@@ -19,26 +19,41 @@ namespace PicDB
         {
         }
 
+        /// <summary>
+        /// A list of keywords
+        /// </summary>
         public string Keywords {
             get => _Keywords;
             set => _Keywords = value;
         }
 
+        /// <summary>
+        /// Name of the photographer
+        /// </summary>
         public string ByLine {
             get => _ByLine;
             set => _ByLine = value;
         }
 
+        /// <summary>
+        /// copyright noties. 
+        /// </summary>
         public string CopyrightNotice {
             get => _CopyrightNotice;
             set => _CopyrightNotice = value;
         }
 
+        /// <summary>
+        /// Summary/Headline of the picture
+        /// </summary>
         public string Headline {
             get => _Headline;
             set => _Headline = value;
         }
 
+        /// <summary>
+        /// Caption/Abstract, a description of the picture
+        /// </summary>
         public string Caption {
             get => _Caption;
             set => _Caption = value;

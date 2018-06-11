@@ -47,6 +47,9 @@ namespace PicDB
 
         }
 
+        /// <summary>
+        /// command to update picture sources and save changes
+        /// </summary>
         public ICommand SavePicture
         {
             get
@@ -63,6 +66,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// command to update photographer sources and save changes
+        /// </summary>
         public ICommand SavePhotographer
         {
             get
@@ -79,6 +85,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// command to update camera sources and save changes
+        /// </summary>
         public ICommand SaveCamera
         {
             get
@@ -95,6 +104,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// command to delete camera
+        /// </summary>
         public ICommand DeleteCamera
         {
             get
@@ -111,6 +123,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// command to delete photographer
+        /// </summary>
         public ICommand DeletePhotographer
         {
             get
@@ -127,6 +142,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// command to add photographer
+        /// </summary>
         public ICommand AddPhotographer
         {
             get
@@ -145,6 +163,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// command to add camera
+        /// </summary>
         public ICommand AddCamera
         {
             get
@@ -164,6 +185,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// The current picture ViewModel
+        /// </summary>
         public IPictureViewModel CurrentPicture
         {
             get
@@ -172,6 +196,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// index of currently selected picture
+        /// </summary>
         public int CurrentIndex
         {
             get
@@ -187,6 +214,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// ViewModel with a list of all Pictures
+        /// </summary>
         public IPictureListViewModel List
         {
             get
@@ -204,6 +234,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// list of available photographers
+        /// </summary>
         public PhotographerListViewModel PhotographerList
         {
             get
@@ -219,6 +252,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// list of available cameras
+        /// </summary>
         public CameraListViewModel CameraList
         {
             get
@@ -233,6 +269,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// Search ViewModel
+        /// </summary>
         public ISearchViewModel Search => _Search;
 
         protected void OnPropertyChanged(string name)

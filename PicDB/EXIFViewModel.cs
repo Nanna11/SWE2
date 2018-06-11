@@ -23,18 +23,39 @@ namespace PicDB
             pvm.PropertyChanged += SubPropertyChanged;
         }
 
+        // <summary>
+        /// Name of camera
+        /// </summary>
         public string Make => _EXIFModel.Make;
 
+        /// <summary>
+        /// Aperture number
+        /// </summary>
         public decimal FNumber => _EXIFModel.FNumber;
 
+        /// <summary>
+        /// Exposure time
+        /// </summary>
         public decimal ExposureTime => _EXIFModel.ExposureTime;
 
+        /// <summary>
+        /// ISO value
+        /// </summary>
         public decimal ISOValue => _EXIFModel.ISOValue;
 
+        /// <summary>
+        /// Flash yes/no
+        /// </summary>
         public bool Flash => _EXIFModel.Flash;
 
+        /// <summary>
+        /// The Exposure Program as string
+        /// </summary>
         public string ExposureProgram => _EXIFModel.ExposureProgram.ToString();
 
+        /// <summary>
+        /// The Exposure Program as image resource
+        /// </summary>
         public string ExposureProgramResource
         {
             get
@@ -43,6 +64,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// Gets or sets a optional camera view model
+        /// </summary>
         public ICameraViewModel Camera {
             get => _PictureViewModel.Camera;
             set
@@ -53,6 +77,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// Returns a ISO rating if a camera is set.
+        /// </summary>
         public ISORatings ISORating
         {
             get
@@ -65,6 +92,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// Returns a image resource of a ISO rating if a camera is set.
+        /// </summary>
         public string ISORatingResource
         {
             get

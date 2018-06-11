@@ -21,8 +21,15 @@ namespace PicDB
         {
             _PhotographerModel = pm;
         }
+
+        /// <summary>
+        /// Database primary key
+        /// </summary>
         public int ID => _PhotographerModel.ID;
 
+        /// <summary>
+        /// Firstname, including middle name
+        /// </summary>
         public string FirstName {
             get => _PhotographerModel.FirstName;
             set
@@ -33,6 +40,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// Lastname
+        /// </summary>
         public string LastName {
             get => _PhotographerModel?.LastName;
             set
@@ -44,6 +54,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// Birthday
+        /// </summary>
         public DateTime? BirthDay {
             get => _PhotographerModel?.BirthDay;
             set
@@ -54,13 +67,22 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// Notes
+        /// </summary>
         public string Notes {
             get => _PhotographerModel?.Notes;
             set => _PhotographerModel.Notes = value;
         }
 
+        /// <summary>
+        /// Returns the number of Pictures
+        /// </summary>
         public int NumberOfPictures => _NumberOfPictures;
 
+        /// <summary>
+        /// Returns true, if the model is valid
+        /// </summary>
         public bool IsValid
         {
             get
@@ -70,6 +92,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// Returns a summary of validation errors
+        /// </summary>
         public string ValidationSummary
         {
             get
@@ -92,6 +117,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// returns full name of photographer
+        /// </summary>
         public string FullName
         {
             get
@@ -100,6 +128,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// returns true if the last name is valid
+        /// </summary>
         public bool IsValidLastName {
             get
             {
@@ -115,7 +146,10 @@ namespace PicDB
                 
             }
         }
-        
+
+        /// <summary>
+        /// returns true if the birthday is valid
+        /// </summary>
         public bool IsValidBirthDay
         {
             get
@@ -138,6 +172,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// returns photographer model
+        /// </summary>
         public PhotographerModel PhotographerModel
         {
             get
@@ -146,6 +183,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// resumes last valid state
+        /// </summary>
         public void UndoUpdate()
         {
             if(!IsValidBirthDay) BirthDay = _LastBirthday;

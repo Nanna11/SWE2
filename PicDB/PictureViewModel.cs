@@ -46,8 +46,15 @@ namespace PicDB
                 ((CameraViewModel)_CameraViewModel).PropertyChanged += new PropertyChangedEventHandler(SubPropertyChanged);
             }
         }
+
+        /// <summary>
+        /// Database primary key
+        /// </summary>
         public int ID => _PictureModel.ID;
 
+        /// <summary>
+        /// Name of the file
+        /// </summary>
         public string FileName
         {
             get
@@ -64,6 +71,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// Full file path, used to load the image
+        /// </summary>
         public string FilePath
         {
             get
@@ -83,6 +93,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// The line below the Picture. Format: {IPTC.Headline|FileName} (by {Photographer|IPTC.ByLine}).
+        /// </summary>
         public string DisplayName
         {
             get
@@ -110,6 +123,9 @@ namespace PicDB
 
         }
 
+        /// <summary>
+        /// The IPTC ViewModel
+        /// </summary>
         public IIPTCViewModel IPTC
         {
             get
@@ -118,6 +134,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// The EXIF ViewModel
+        /// </summary>
         public IEXIFViewModel EXIF
         {
             get
@@ -135,6 +154,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// The Photographer ViewModel
+        /// </summary>
         public IPhotographerViewModel Photographer {
             get { return _PhotographerViewModel;}
             set
@@ -151,7 +173,9 @@ namespace PicDB
             }
         }
 
-
+        /// <summary>
+        /// The Camera ViewModel
+        /// </summary>
         public ICameraViewModel Camera
         {
             get { return _CameraViewModel; }
@@ -164,6 +188,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// The Picture Model
+        /// </summary>
         public PictureModel PictureModel
         {
             get

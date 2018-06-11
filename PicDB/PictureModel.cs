@@ -23,26 +23,41 @@ namespace PicDB
             FileName = fn;
         }
 
+        /// <summary>
+        /// Database primary key
+        /// </summary>
         public int ID {
             get => _ID;
             set { _ID = value; }
             }
 
+        /// <summary>
+        /// Filename of the picture, without path.
+        /// </summary>
         public string FileName {
             get => _FileName;
             set { _FileName = value;}
         }
 
+        /// <summary>
+        /// IPTC information
+        /// </summary>
         public IIPTCModel IPTC {
             get => _IPTC;
             set { _IPTC = value; }
             }
 
+        /// <summary>
+        /// EXIF information
+        /// </summary>
         public IEXIFModel EXIF {
             get => _EXIF;
             set { _EXIF = value; }
         }
 
+        /// <summary>
+        /// The camera (optional)
+        /// </summary>
         public ICameraModel Camera {
             get => _Camera;
             set
@@ -52,6 +67,9 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// The photographer (optional)
+        /// </summary>
         public IPhotographerModel Photographer
         {
             get => _Photographer;

@@ -28,6 +28,10 @@ namespace PicDB
             Save(c);
         }
 
+        /// <summary>
+        /// Deletes a Photographer. A Exception is thrown if a Photographer is still linked to a picture.
+        /// </summary>
+        /// <param name="ID"></param>
         public void DeletePhotographer(int ID)
         {
             List<IPhotographerModel> del = new List<IPhotographerModel>();
@@ -42,6 +46,10 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// Deletes a Picture from the database.
+        /// </summary>
+        /// <param name="ID"></param>
         public void DeletePicture(int ID)
         {
             List<IPictureModel> del = new List<IPictureModel>();
@@ -56,6 +64,10 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// deletes camera from database
+        /// </summary>
+        /// <param name="ID"></param>
         public void DeleteCamera(int ID)
         {
             List<ICameraModel> del = new List<ICameraModel>();
@@ -70,6 +82,11 @@ namespace PicDB
             }
         }
 
+        /// <summary>
+        /// Returns ONE Camera
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <returns></returns>
         public ICameraModel GetCamera(int ID)
         {
             foreach(ICameraModel c in caml)
@@ -79,11 +96,20 @@ namespace PicDB
             throw new Exception();
         }
 
+        /// <summary>
+        /// Returns a list of ALL Cameras.
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<ICameraModel> GetCameras()
         {
             return caml;
         }
 
+        /// <summary>
+        /// Returns ONE Photographer
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <returns></returns>
         public IPhotographerModel GetPhotographer(int ID)
         {
             foreach (IPhotographerModel c in phol)
@@ -93,11 +119,19 @@ namespace PicDB
             throw new Exception();
         }
 
+        /// <summary>
+        /// Returns a list of ALL Photographers.
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<IPhotographerModel> GetPhotographers()
         {
             return phol;
         }
 
+        /// <summary>
+        /// Returns ONE Picture from the database.
+        /// </summary>
+        /// <returns></returns>
         public IPictureModel GetPicture(int ID)
         {
             foreach (IPictureModel c in picl)
@@ -107,6 +141,10 @@ namespace PicDB
             throw new Exception();
         }
 
+        /// <summary>
+        /// Returns a filterd list of Pictures from the directory, based on a database query.
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<IPictureModel> GetPictures(string namePart, IPhotographerModel photographerParts, BIF.SWE2.Interfaces.Models.IIPTCModel iptcParts, IEXIFModel exifParts)
         {
             if(namePart != null)
@@ -135,6 +173,10 @@ namespace PicDB
             
         }
 
+        /// <summary>
+        /// Saves all changes to the database.
+        /// </summary>
+        /// <param name="picture"></param>
         public void Save(IPictureModel picture)
         {
             int max = 0;
@@ -163,6 +205,10 @@ namespace PicDB
             picl.Add(picture);
         }
 
+        /// <summary>
+        /// Saves all changes.
+        /// </summary>
+        /// <param name="photographer"></param>
         public void Save(IPhotographerModel photographer)
         {
             int max = 0;
@@ -191,6 +237,10 @@ namespace PicDB
             phol.Add(photographer);
         }
 
+        /// <summary>
+        /// saves camera to database
+        /// </summary>
+        /// <param name="camera"></param>
         public void Save(ICameraModel camera)
         {
             int max = 0;
